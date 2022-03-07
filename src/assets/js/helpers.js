@@ -114,12 +114,17 @@ export default {
                     urls: ["stun:eu-turn4.xirsys.com"]
                 },
                 {
-                    username: "ml0jh0qMKZKd9P_9C0UIBY2G0nSQMCFBUXGlk6IXDJf8G2uiCymg9WwbEJTMwVeiAAAAAF2__hNSaW5vbGVl",
-                    credential: "4dd454a6-feee-11e9-b185-6adcafebbb45",
+                    username: "ijUXy3I07hpTqb386hCdViUnpSytt2cWTyGIEj2qrsn_TKziFtGqAMvil5HO1HU3AAAAAGIjrGNnbGVibWFrc2ltbmVrbw==",
                     urls: [
-                        "turn:eu-turn4.xirsys.com:80?transport=udp",
-                        "turn:eu-turn4.xirsys.com:3478?transport=tcp"
-                    ]
+                        "stun:fr-turn1.xirsys.com",
+                        "turn:fr-turn1.xirsys.com:80?transport=udp",
+                        "turn:fr-turn1.xirsys.com:3478?transport=udp",
+                        "turn:fr-turn1.xirsys.com:80?transport=tcp",
+                        "turn:fr-turn1.xirsys.com:3478?transport=tcp",
+                        "turns:fr-turn1.xirsys.com:443?transport=tcp",
+                        "turns:fr-turn1.xirsys.com:5349?transport=tcp"
+                    ],
+                    credential: "6729819c-9cb2-11ec-8a35-0242ac120004"
                 }
             ]
         };
