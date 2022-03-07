@@ -47,13 +47,6 @@ export class HelperService {
     return null;
   }
 
-  setLocalStream( stream: MediaStream, mirrorMode = true ) {
-    const localVidElem = document.getElementById( 'local' ) as HTMLVideoElement;
-
-    localVidElem.srcObject = stream;
-    mirrorMode ? localVidElem.classList.add( 'mirror-mode' ) : localVidElem.classList.remove( 'mirror-mode' );
-}
-
   getUserFullMedia() {
       return navigator.mediaDevices.getUserMedia({
         video: true,

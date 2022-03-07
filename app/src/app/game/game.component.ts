@@ -17,6 +17,13 @@ export class GameComponent implements OnInit {
         })
   }
 
+  getMyStream(){
+    return this.rtc.myStream;
+  }
+
+  getVideos(){
+    return this.rtc.videos.values();
+  }
   ngOnInit(): void {
     if (this.rtc.username){
       this.rtc.initialize();

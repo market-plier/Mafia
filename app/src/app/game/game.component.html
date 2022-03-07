@@ -5,3 +5,5 @@
     </mat-form-field>
     <button [disabled]="form.invalid" type="submit">Join</button>
 </form>
+    <video [srcObject]="getMyStream()" volume='0' autoplay muted></video>
+<video [srcObject]="item" *ngFor="let item of getVideos()" volume='0' autoplay muted></video>
