@@ -10,7 +10,7 @@ export class HelperService {
 
   closeVideo( elemId: string ) {
     if ( document.getElementById( elemId ) ) {
-     //todo   document.getElementById( elemId ).remove();
+     //TODO   document.getElementById( elemId ).remove();
     }
 }
   generateRandomString() {

@@ -7,6 +7,7 @@
 </form>
     <div class="players">
     <video [srcObject]="getMyStream()" volume='0' autoplay muted></video>
-    <video [srcObject]="item" *ngFor="let item of getVideos()" volume='0' autoplay muted></video>
+    <video [srcObject]="item" *ngFor="let item of videos$ | async" volume='0' autoplay muted></video>
 
     </div>
+    <button (click)="ready()">Ready</button>
