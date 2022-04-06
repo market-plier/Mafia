@@ -5,3 +5,18 @@
 video{
     max-width: 320px;
 }
+
+.video {
+    max-width: 320px;
+    position: relative;
+}
+
+.position {
+  width: 10px;
+  height: 10px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: white;
+  border-radius: 50%;
+}

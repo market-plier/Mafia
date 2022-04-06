@@ -5,6 +5,7 @@ import {
   detectiveCheck,
   donCheck,
   gameDataMap,
+  getFullGameData,
   getGameData,
   getMafiaSockets,
   initRoom as gameInitRoom,
@@ -31,9 +32,16 @@ export const stream = (socket: any) => {
       if (socket.adapter.rooms.get(data.room)?.size > 1) {
         socket.to(data.room).emit("new user", { socketId: data.socketId });
       } else {
-        gameInitRoom(room);
+        gameInitRoom(data.room);
       }
-      socket.emit('game data', joinRoom(data.room, data.username, data.socketId));
+      if (socket.adapter.rooms.get(data.room)?.size == 4){
+        gameDataMap.get(data.room)?.startGame()
+      }
+      joinRoom(data.room, data.username, data.socketId);
+      const users = gameDataMap.get(data.room)?.players;
+      users?.forEach((x) => {
+        io.to(x.wsId).emit("game data", getGameData(data.room, x.name));
+      });
     }
   });
 

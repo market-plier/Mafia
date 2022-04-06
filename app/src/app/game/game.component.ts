@@ -13,18 +13,15 @@ import { Observable } from 'rxjs';
 export class GameComponent implements OnInit {
 
   form: FormGroup;
-  videos$: Observable<any[]>;
+
+  public get gameData(){
+    return this.rtc.gameData
+  }
+
   constructor(private rtc: RtcService ) {
         this.form = new FormGroup({
           playerName: new FormControl('', Validators.required)
         })
-        this.videos$ = rtc.videos$.pipe(
-          map(x => Array.from(x.values()))
-        );
-  }
-
-  getMyStream(){
-    return this.rtc.myStream;
   }
 
   ngOnInit(): void {

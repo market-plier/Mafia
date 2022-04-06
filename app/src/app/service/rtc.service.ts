@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
 import { timeout } from 'rxjs/operators';
 import { io } from 'socket.io-client';
+import { GameData, PlayerWe } from '../model/game';
 import { HelperService } from './helper.service';
 @Injectable({
   providedIn: 'root',
@@ -10,16 +11,15 @@ import { HelperService } from './helper.service';
 export class RtcService {
   room: any;
   username: string | null = '';
-  randomNumber: string = '';
   peerConnection: RTCPeerConnection[] = [];
   peerConnectionIds: string[] = [];
-  screen: MediaStream | undefined;
   myStream: MediaStream | undefined;
   socketId: any;
-  videos = new Map();
-  private videosSubject = new Subject<Map<any,any>>();
+  private videosSubject = new Subject<Map<any, any>>();
   videos$ = this.videosSubject.asObservable();
   socket = io('http://localhost:3000');
+  gameData?: GameData;
+
   constructor(
     private h: HelperService,
     private activatedRoute: ActivatedRoute
@@ -28,9 +28,8 @@ export class RtcService {
       this.room = params['room'];
     });
     this.username = sessionStorage.getItem('username');
-    this.h
-    .getUserFullMedia()
-    .then(async (stream) => {
+
+    this.h.getUserFullMedia().then(async (stream) => {
       //save my stream
       this.myStream = stream;
     });
@@ -38,12 +37,16 @@ export class RtcService {
 
   initialize() {
     this.username = sessionStorage.getItem('username');
-    this.randomNumber = `__${this.h.generateRandomString()}__${this.h.generateRandomString()}__`; //TODO smth with dat
     //set socketId
     this.socketId = this.socket.io.engine.id;
 
-    this.socket.on('game data', (data) => {
-      console.log(data);
+    this.socket.on('game data', (data: GameData) => {
+      this.gameData?.players.forEach((x) => {
+        x = Object.assign(x, data.players.find);
+      });
+      this.updateGameData(data);
+      this.gameData = data;
+      this.gameData?.players.find;
     });
 
     this.socket.on('new user', (data: { socketId: any }) => {
@@ -121,23 +124,30 @@ export class RtcService {
       }
     );
 
-    setTimeout(() => {
-      this.socket.emit('subscribe', {
-        room: this.room,
-        socketId: this.socketId,
-        username: `${this.username} (${this.randomNumber})`,
-      })
-    }, 1);
+    this.socket.emit('subscribe', {
+      room: this.room,
+      socketId: this.socketId,
+      username: this.username,
+    });
+  }
+  updateGameData(data: GameData) {
+    if (!this.gameData) {
+      this.gameData = data;
+      return;
+    }
+    this.gameData.players = this.gameData.players.map((x) =>
+      Object.assign(
+        x,
+        data.players.find((y) => y.name === x.name),
+        x.mediaStream
+      )
+    );
   }
   init(createOffer: boolean, partnerName: any) {
     this.peerConnection[partnerName] = new RTCPeerConnection(
       this.h.getIceServer()
     );
-    if (this.screen && this.screen.getTracks().length) {
-      this.screen.getTracks().forEach((track) => {
-        this.peerConnection[partnerName].addTrack(track, this.screen!); //should trigger negotiationneeded event
-      });
-    } else if (this.myStream) {
+    if (this.myStream) {
       this.myStream.getTracks().forEach((track) => {
         this.peerConnection[partnerName].addTrack(track, this.myStream!); //should trigger negotiationneeded event
       });
@@ -183,16 +193,19 @@ export class RtcService {
 
     //add
     this.peerConnection[partnerName].ontrack = (e) => {
+      console.log('on track');
       let str = e.streams[0];
-      this.videos.set(partnerName, str);
-      this.videosSubject.next(this.videos);
+      const peer = this.gameData?.players.find((x) => x.wsId === partnerName);
+      peer && (peer.mediaStream = str);
+      // this.videos.set(partnerName, str);
+      // this.videosSubject.next(this.videos);
     };
 
     this.peerConnection[partnerName].onconnectionstatechange = (d) => {
       switch (this.peerConnection[partnerName].iceConnectionState) {
         case 'disconnected':
         case 'failed':
-          this.h.closeVideo(partnerName);//TODO
+          this.h.closeVideo(partnerName); //TODO
           break;
 
         case 'closed':
@@ -214,15 +227,14 @@ export class RtcService {
     let data = {
       room: this.room,
       msg: msg,
-      sender: `${this.username} (${this.randomNumber})`,
+      sender: this.username,
     };
   }
 
   sendReady() {
     this.socket.emit('ready', {
       room: this.room,
-      sender: `${this.username} (${this.randomNumber})`,
+      sender: this.username,
     });
   }
-
 }

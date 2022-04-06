@@ -6,8 +6,12 @@
     <button [disabled]="form.invalid" type="submit">Join</button>
 </form>
     <div class="players">
-    <video [srcObject]="getMyStream()" volume='0' autoplay muted></video>
-    <video [srcObject]="item" *ngFor="let item of videos$ | async" volume='0' autoplay muted></video>
+    <div class="video" *ngFor="let item of gameData?.players ?? []">
+      <video [srcObject]="item.mediaStream" volume='0' autoplay muted>
+      </video>
+      <div class="position">{{item.position}}</div>
+    </div>
+
 
     </div>
     <button (click)="ready()">Ready</button>

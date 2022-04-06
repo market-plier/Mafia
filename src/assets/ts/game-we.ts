@@ -26,7 +26,7 @@ export class PlayerWe {
   isOnVote: boolean;
   hasVoted: boolean;
   voteCount: number;
-
+  wsId: string;
   constructor(player: Player) {
     this.name = player.name;
     this.isReady = player.isReady;
@@ -35,5 +35,6 @@ export class PlayerWe {
     this.isOnVote = player.isOnVote;
     this.hasVoted = player.hasVoted;
     this.voteCount = player.voteCount;
+    this.wsId = player.wsId;
   }
 }
