@@ -1,0 +1,107 @@
+:host {
+  font-size: 25px;
+  line-height: normal;
+  position: relative;
+  max-width: 320px;
+  display: block;
+  video {
+    max-width: 320px;
+    transform: rotateY(180deg);
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  &.playerTurn {
+    border: 3px;
+    border-color: aquamarine;
+  }
+  .onVote {
+    text-align: center;
+    width: 60px;
+    line-height: 60px;
+    height: 60px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-radius: 50%;
+  }
+
+  .ready {
+    text-align: center;
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    top: 0;
+    left: 0; 
+    right: 0; 
+    margin-left: auto; 
+    margin-right: auto; 
+  }
+
+  .position {
+    text-align: center;
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 50%;
+  }
+
+  .playerTurn {
+    text-align: center;
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    bottom: 0;
+    left: 0; 
+    right: 0; 
+    margin-left: auto; 
+    margin-right: auto; 
+  }
+
+  .voteChoise{
+    animation: myAnim 2s ease 0s 1 normal forwards;
+    text-align: center;
+    line-height: 60px;
+    width: 60px;
+    height: 60px;
+    background-color: rgba(232, 244, 255, 0.397);
+    border: 5px solid;
+    border-radius: 2px;
+    border-color: rgba(177, 217, 255, 0.712);
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    left: 0; 
+    right: 0; 
+    margin: auto; 
+  }
+}
+@keyframes myAnim {
+  0% {
+    animation-timing-function: ease-out;
+    transform: scale(1);
+    transform-origin: center center;
+  }
+
+  10% {
+    animation-timing-function: ease-in;
+    transform: scale(0.91);
+  }
+
+  17% {
+    animation-timing-function: ease-out;
+    transform: scale(0.98);
+  }
+
+  33% {
+    animation-timing-function: ease-in;
+    transform: scale(0.87);
+  }
+
+  45% {
+    animation-timing-function: ease-out;
+    transform: scale(1);
+  }
+}

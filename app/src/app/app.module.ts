@@ -10,19 +10,25 @@ import {MatInputModule} from '@angular/material/input';
 import { AppRoutingModule } from './app-routing.module';
 import { NotFoundComponent } from './not-found-component/not-found.component';
 import { GameComponent } from './game/game.component';
+import { PlayerCardComponent } from './player-card/player-card.component';
+import { RoleDialogComponent } from './role-dialog/role-dialog.component';
+import {MatDialogModule} from '@angular/material/dialog';
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
     CreateRoomComponent,
     NotFoundComponent,
-    GameComponent
+    GameComponent,
+    PlayerCardComponent,
+    RoleDialogComponent
   ],
   imports: [
     AppRoutingModule,
     BrowserModule,
     MatFormFieldModule,
     MatInputModule,
+    MatDialogModule,
     ReactiveFormsModule,
     BrowserAnimationsModule
   ],

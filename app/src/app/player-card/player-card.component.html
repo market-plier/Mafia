@@ -1,0 +1,15 @@
+<video [srcObject]="mediaStream" volume='0' autoplay muted>
+</video>
+<div *ngIf="position" class="position">{{toEmoji(position)}}</div>
+<div *ngIf="onVote" class="onVote">
+  🙋‍♂️{{voteCount > 0 ? toEmoji(voteCount):''}}
+</div>
+<div *ngIf="ready" class="ready">
+  ✅
+</div>
+<div *ngIf="playerTurn" class="playerTurn">
+  🎤
+</div>
+<div *ngIf="voteChoise" class="voteChoise">
+  👉{{toEmoji(voteChoise)}}
+</div>

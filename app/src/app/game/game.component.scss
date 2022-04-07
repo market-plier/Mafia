@@ -1,6 +1,8 @@
 .players{
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    gap: 3px;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(3, 1fr);
 }
 video{
     max-width: 320px;
@@ -10,7 +12,12 @@ video{
     max-width: 320px;
     position: relative;
 }
-
+.emptySpace{
+   grid-column-start: 2;
+   grid-column-end: 4;
+   grid-row-start: 2;
+   grid-row-end: 2;
+}
 .position {
   width: 10px;
   height: 10px;

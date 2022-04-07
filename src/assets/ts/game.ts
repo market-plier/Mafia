@@ -109,7 +109,7 @@ export function getMafiaSockets(room: string) {
 export function getGameData(room: string, username: string) {
   const gameData = gameDataMap.get(room);
   const user = gameData?.players.find((x) => x.name === username);
-  const players = gameData?.players;
+  const players = gameData?.players.filter(x => x.name !== username);
   if (user && players) {
     return new PersonalGameDataWe(user, players);
   } else {
@@ -126,13 +126,10 @@ export function initRoom(room: string) {
   if (!gameDataMap.has(room)) {
     gameDataMap.set(room, new GameData());
   }
-  console.log(gameDataMap);
 }
 
 export function joinRoom(room: string, name: string, wsId: string) {
   const gameData = gameDataMap.get(room)!;
-  console.log(gameDataMap)
-  console.log(gameData);
   const player = gameData.players?.find((x) => x.name === name);
   if (!player) {
     gameData.players.push(new Player(name, wsId));

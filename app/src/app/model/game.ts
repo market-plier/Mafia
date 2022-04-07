@@ -9,6 +9,8 @@ export interface GameData {
   player: Player;
   players: PlayerWe[]
   day: number;
+  currentTurn: number;
+  killedPreviousTurn: number;
 }
 
 export interface PlayerWe {
@@ -18,6 +20,7 @@ export interface PlayerWe {
   position: number;
   isOnVote: boolean;
   hasVoted: boolean;
+  voteChoise: number
   voteCount: number;
   wsId: string;
   mediaStream: MediaStream;
@@ -34,5 +37,6 @@ export interface Player {
   isOnVote: boolean;
   hasVoted: boolean;
   voteCount: number;
+  voteChoise: number
   shot: number;
 }

@@ -1,0 +1,9 @@
+
+<ng-container [ngSwitch]="role">
+    <img *ngSwitchCase="roles.don" src="assets/img/dondon.jpeg">
+    <img *ngSwitchCase="roles.detective" src="assets/img/detective.jpeg">
+    <img *ngSwitchCase="roles.civilian" src="assets/img/civilian.jpg">
+    <img *ngSwitchCase="roles.mafia" src="assets/img/mafia.jpg">
+</ng-container>
+
+  <button mat-button [mat-dialog-close] cdkFocusInitial>Ok🤡</button>

@@ -18,6 +18,10 @@ export class GameComponent implements OnInit {
     return this.rtc.gameData
   }
 
+  public get myStream(){
+    return this.rtc.myStream
+  }
+
   constructor(private rtc: RtcService ) {
         this.form = new FormGroup({
           playerName: new FormControl('', Validators.required)

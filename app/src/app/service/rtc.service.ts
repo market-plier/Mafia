@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
 import { timeout } from 'rxjs/operators';
 import { io } from 'socket.io-client';
 import { GameData, PlayerWe } from '../model/game';
+import { RoleDialogComponent } from '../role-dialog/role-dialog.component';
 import { HelperService } from './helper.service';
 @Injectable({
   providedIn: 'root',
@@ -22,7 +24,8 @@ export class RtcService {
 
   constructor(
     private h: HelperService,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private dialog: MatDialog
   ) {
     this.activatedRoute.queryParams.subscribe((params) => {
       this.room = params['room'];
@@ -39,15 +42,17 @@ export class RtcService {
     this.username = sessionStorage.getItem('username');
     //set socketId
     this.socketId = this.socket.io.engine.id;
-
+    console.log(this.socketId);
     this.socket.on('game data', (data: GameData) => {
-      this.gameData?.players.forEach((x) => {
-        x = Object.assign(x, data.players.find);
-      });
+
       this.updateGameData(data);
-      this.gameData = data;
-      this.gameData?.players.find;
+      console.log(this.gameData);
     });
+
+    this.socket.on('game start', (data: GameData) => {
+      this.updateGameData(data);
+      this.openDialog();
+    })
 
     this.socket.on('new user', (data: { socketId: any }) => {
       console.log('new user');
@@ -72,8 +77,8 @@ export class RtcService {
         console.log('ice candidates');
         data.candidate
           ? await this.peerConnection[data.sender].addIceCandidate(
-              new RTCIceCandidate(data.candidate)
-            )
+            new RTCIceCandidate(data.candidate)
+          )
           : '';
       }
     );
@@ -85,8 +90,8 @@ export class RtcService {
         if (data.description.type === 'offer') {
           data.description
             ? await this.peerConnection[data.sender].setRemoteDescription(
-                new RTCSessionDescription(data.description)
-              )
+              new RTCSessionDescription(data.description)
+            )
             : '';
 
           this.h
@@ -124,6 +129,11 @@ export class RtcService {
       }
     );
 
+    this.socket.on('ready', data => {
+      const player = this.gameData?.players.find(x => x.name === data.sender);
+      player && (player.isReady = true);
+    })
+
     this.socket.emit('subscribe', {
       room: this.room,
       socketId: this.socketId,
@@ -142,6 +152,7 @@ export class RtcService {
         x.mediaStream
       )
     );
+    console.log(this.gameData);
   }
   init(createOffer: boolean, partnerName: any) {
     this.peerConnection[partnerName] = new RTCPeerConnection(
@@ -235,6 +246,13 @@ export class RtcService {
     this.socket.emit('ready', {
       room: this.room,
       sender: this.username,
+    });
+  }
+
+  openDialog(): void {
+    const dialogRef = this.dialog.open(RoleDialogComponent, {
+      width: '400px',
+      data: this.gameData?.player.role,
     });
   }
 }

@@ -5,13 +5,23 @@
     </mat-form-field>
     <button [disabled]="form.invalid" type="submit">Join</button>
 </form>
-    <div class="players">
-    <div class="video" *ngFor="let item of gameData?.players ?? []">
-      <video [srcObject]="item.mediaStream" volume='0' autoplay muted>
-      </video>
-      <div class="position">{{item.position}}</div>
-    </div>
-
+<div class="players">
+    <div class="emptySpace">
 
     </div>
-    <button (click)="ready()">Ready</button>
+    <ng-container *ngIf="gameData?.players">
+        <app-player-card *ngFor="let item of gameData?.players" [ready]="item.isReady" [position]="item.position"
+            [ngStyle]="{'order': item.position}" [onVote]="item.isOnVote" [voteCount]="item.voteCount"
+            [voteChoise]="item.voteChoise" [playerTurn]="gameData?.currentTurn === item.position">
+        </app-player-card>
+    </ng-container>
+
+    <app-player-card *ngIf="gameData" [ready]="gameData.player.isReady" [position]="gameData.player.position"
+        [ngStyle]="{'order': gameData.player.position}" [onVote]="gameData.player.isOnVote"
+        [voteCount]="gameData.player.voteCount" [voteChoise]="gameData.player.voteChoise"
+        [playerTurn]="gameData?.currentTurn === gameData.player.position" [mediaStream]="myStream">
+    </app-player-card>
+
+</div>
+<button (click)="ready()">Ready</button>
+

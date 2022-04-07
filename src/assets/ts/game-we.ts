@@ -12,7 +12,8 @@ export class PersonalGameDataWe {
 export class GameDataWe {
   players: PlayerWe[] = [];
   day = 0;
-  killedPreviousTurn = 0;
+  killedPreviousTurn = 0;  
+  currentTurn = 0;
   constructor(gameData: GameData){
     this.players = gameData.players.map(x => new PlayerWe(x));
     this.day = gameData.day;
