@@ -7,20 +7,24 @@
 </form>
 <div class="players">
     <div class="emptySpace">
-
+<ng-container [ngSwitch]="gameData?.gameState">
+    <div *ngSwitchCase="gameState.MafiaMeet">
+      Mafia meeting...⏳
+    </div>
+</ng-container>
     </div>
     <ng-container *ngIf="gameData?.players">
         <app-player-card *ngFor="let item of gameData?.players" [ready]="item.isReady" [position]="item.position"
             [ngStyle]="{'order': item.position}" [onVote]="item.isOnVote" [voteCount]="item.voteCount"
             [voteChoise]="item.voteChoise" [playerTurn]="gameData?.currentTurn === item.position" [mediaStream]="item.mediaStream" [name]="item.name"
-            [gameState]="gameData?.gameState">
+            [gameState]="gameData?.gameState" [role]="item.role">
         </app-player-card>
     </ng-container>
 
     <app-player-card *ngIf="gameData" [ready]="gameData.player.isReady" [position]="gameData.player.position"
         [ngStyle]="{'order': gameData.player.position}" [onVote]="gameData.player.isOnVote"
         [voteCount]="gameData.player.voteCount" [voteChoise]="gameData.player.voteChoise"
-        [playerTurn]="gameData?.currentTurn === gameData.player.position" [mediaStream]="myStream">
+        [playerTurn]="gameData?.currentTurn === gameData.player.position" [mediaStream]="myStream" [gameState]="gameData?.gameState" [role]="gameData.player.role">
     </app-player-card>
 
 </div>

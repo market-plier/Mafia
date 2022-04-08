@@ -1,5 +1,5 @@
 import { Component, HostBinding, Input, OnInit } from '@angular/core';
-import { GameState } from '../model/game';
+import { GameState, Roles } from '../model/game';
 
 @Component({
   selector: 'app-player-card',
@@ -18,22 +18,24 @@ export class PlayerCardComponent implements OnInit {
   @Input() voteChoise?: number;
   @Input() mediaStream?: MediaStream;
   @Input() name?: string;
-  @Input() gameState?: string;
+  @Input() gameState?: GameState;
+  @Input() role?: Roles;
+
   state = GameState;
 
      toEmoji(str: any) {
       if (str === undefined || str === null || str === '') {
         return str;
       }
-  
+
       if (typeof str !== 'string') {
         str = str.toString();
       }
-  
+
       if (str === '10') {
         return '🔟';
       }
-  
+
       return str
         .replace(/0/g, '0️⃣')
         .replace(/1/g, '1️⃣')
@@ -51,6 +53,13 @@ export class PlayerCardComponent implements OnInit {
 
 
   ngOnInit(): void {
+    setTimeout(()=> this.gameState = GameState.Lobby, 5000);
+  }
+
+  showVideo(){
+    console.log(this.gameState, this.role)
+    return (this.gameState === GameState.Day) || (this.gameState === GameState.Lobby) ||
+    (this.gameState === this.state.MafiaMeet && (this.role === Roles.mafia ||this.role === Roles.don))
   }
 
 }

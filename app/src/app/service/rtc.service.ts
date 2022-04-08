@@ -48,6 +48,7 @@ export class RtcService {
     });
 
     this.socket.on('game start', (data: GameData) => {
+      console.log(data);
       this.updateGameData(data);
       this.openDialog();
     })
@@ -232,13 +233,6 @@ export class RtcService {
           this.h.closeVideo(partnerName);
           break;
       }
-    };
-  }
-  sendMsg(msg: any) {
-    let data = {
-      room: this.room,
-      msg: msg,
-      sender: this.username,
     };
   }
 

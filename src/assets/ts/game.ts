@@ -9,12 +9,13 @@ export enum Roles {
 }
 
 export enum GameState {
+  Lobby,
   MafiaMeet,
   Day,
   Vote,
   MafiaShoot,
   DonCheck,
-  DetectiveCheck
+  DetectiveCheck,
 }
 const sleep = require("util").promisify(setTimeout);
 export class GameData {
@@ -22,7 +23,7 @@ export class GameData {
   day = 0;
   currentTurn = 0;
   killedPreviousTurn = 0;
-  gameState: GameState = GameState.MafiaMeet
+  gameState: GameState = GameState.Lobby;
 
   tryKill() {
     const mafias = this.players.filter(
@@ -54,6 +55,7 @@ export class GameData {
     this.assignRoles();
     this.shufflePositions();
     this.players.forEach((x) => (x.isReady = false));
+    this.gameState = GameState.MafiaMeet;
   }
   assignRoles() {
     //TODO do it better
@@ -117,13 +119,12 @@ export function getMafiaSockets(room: string) {
 
 export function getGameData(room: string, username: string) {
   const gameData = gameDataMap.get(room);
-  if(gameData)
-  return getPersonalGameData(gameData, username)
+  if (gameData) return getPersonalGameData(gameData, username);
 }
 
 export function getPersonalGameData(gameData: GameData, username: string) {
   const user = gameData?.players.find((x) => x.name === username);
-  const players = gameData?.players.filter(x => x.name !== username);
+  const players = gameData?.players.filter((x) => x.name !== username);
   if (user && players) {
     return new PersonalGameDataWe(user, players, gameData!);
   } else {
@@ -173,9 +174,9 @@ export function startGame(room: string) {
 export async function startDay(room: string) {
   const gameData = gameDataMap.get(room)!;
   gameData && gameData.day++;
-  gameData.players.forEach(x => {
-    io.to(x.wsId).emit("start day", getPersonalGameData(gameData, x.name))
-  }) 
+  gameData.players.forEach((x) => {
+    io.to(x.wsId).emit("start day", getPersonalGameData(gameData, x.name));
+  });
   await sleep(3000);
   nextTurn(room);
 }
@@ -208,7 +209,8 @@ export function mafiaShot(room: string, position: number, name: string) {
 
 export function detectiveCheck(room: string, position: number) {
   const gameData = gameDataMap.get(room)!;
-  return gameData.players.find((x) => x.position === position)?.role === Roles.civilian
+  return gameData.players.find((x) => x.position === position)?.role ===
+    Roles.civilian
     ? Roles.civilian
     : Roles.mafia;
 }
@@ -216,7 +218,8 @@ export function detectiveCheck(room: string, position: number) {
 export function donCheck(room: string, position: number) {
   const gameData = gameDataMap.get(room)!;
   gameData.clear();
-  return gameData.players.find((x) => x.position === position)?.role === Roles.detective
+  return gameData.players.find((x) => x.position === position)?.role ===
+    Roles.detective
     ? Roles.detective
     : Roles.civilian;
 }

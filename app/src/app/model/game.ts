@@ -6,6 +6,7 @@ export enum Roles {
 }
 
 export enum GameState {
+  Lobby,
   MafiaMeet,
   Day,
   Vote,
@@ -28,6 +29,7 @@ export interface PlayerWe {
   isReady: boolean;
   alive: boolean;
   position: number;
+  role: Roles
   isOnVote: boolean;
   hasVoted: boolean;
   voteChoise: number

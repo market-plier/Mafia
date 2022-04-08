@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RtcService } from '../service/rtc.service';
 import { map, mapTo, tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { GameState } from '../model/game';
 
 @Component({
   selector: 'app-game',
@@ -13,7 +14,7 @@ import { Observable } from 'rxjs';
 export class GameComponent implements OnInit {
 
   form: FormGroup;
-
+  gameState = GameState;
   public get gameData(){
     return this.rtc.gameData
   }
