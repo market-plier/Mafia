@@ -5,10 +5,20 @@ export enum Roles {
   don,
 }
 
+export enum GameState {
+  MafiaMeet,
+  Day,
+  Vote,
+  MafiaShoot,
+  DonCheck,
+  DetectiveCheck
+}
+
 export interface GameData {
   player: Player;
   players: PlayerWe[]
   day: number;
+  gameState: GameState
   currentTurn: number;
   killedPreviousTurn: number;
 }
@@ -23,7 +33,7 @@ export interface PlayerWe {
   voteChoise: number
   voteCount: number;
   wsId: string;
-  mediaStream: MediaStream;
+  mediaStream?: MediaStream;
 }
 
 export interface Player {

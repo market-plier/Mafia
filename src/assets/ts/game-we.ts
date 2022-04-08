@@ -1,29 +1,35 @@
-import { GameData, Player } from "./game";
+import { GameData, GameState, Player, Roles } from "./game";
 export class PersonalGameDataWe {
   player: Player;
   players: PlayerWe[] = [];
   day = 0;
-  constructor(player: Player, players: Player[]){
+  killedPreviousTurn = 0;
+  currentTurn = 0;
+  gameState: GameState
+  constructor(player: Player, players: Player[], gameData: GameData) {
     this.player = player;
-    this.players = players.map(x => new PlayerWe(x));
+    this.players = players.map(x => {
+      const player = new PlayerWe(x);
+      if (
+        (this.player.role === Roles.don || this.player.role === Roles.mafia) &&
+        (x.role === Roles.don || x.role === Roles.mafia)) {
+        player.role = x.role;
+      }
+      return player
+    });
+    this.day = gameData.day;
+    this.gameState = gameData.gameState;
+    this.killedPreviousTurn = gameData.killedPreviousTurn;
+    this.currentTurn = gameData.currentTurn;
   }
 }
 
-export class GameDataWe {
-  players: PlayerWe[] = [];
-  day = 0;
-  killedPreviousTurn = 0;  
-  currentTurn = 0;
-  constructor(gameData: GameData){
-    this.players = gameData.players.map(x => new PlayerWe(x));
-    this.day = gameData.day;
-  }
-}
 export class PlayerWe {
   name: string = "";
   isReady: boolean = false;
   alive = true;
   position: number;
+  role = Roles.civilian;
   isOnVote: boolean;
   hasVoted: boolean;
   voteCount: number;

@@ -12,7 +12,8 @@
     <ng-container *ngIf="gameData?.players">
         <app-player-card *ngFor="let item of gameData?.players" [ready]="item.isReady" [position]="item.position"
             [ngStyle]="{'order': item.position}" [onVote]="item.isOnVote" [voteCount]="item.voteCount"
-            [voteChoise]="item.voteChoise" [playerTurn]="gameData?.currentTurn === item.position">
+            [voteChoise]="item.voteChoise" [playerTurn]="gameData?.currentTurn === item.position" [mediaStream]="item.mediaStream" [name]="item.name"
+            [gameState]="gameData?.gameState">
         </app-player-card>
     </ng-container>
 

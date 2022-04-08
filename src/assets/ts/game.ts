@@ -1,6 +1,5 @@
-import { async } from "rxjs";
 import { io } from "../../app";
-import { GameDataWe, PersonalGameDataWe } from "./game-we";
+import { PersonalGameDataWe } from "./game-we";
 export const gameDataMap = new Map<string, GameData>();
 export enum Roles {
   detective,
@@ -8,12 +7,22 @@ export enum Roles {
   mafia,
   don,
 }
+
+export enum GameState {
+  MafiaMeet,
+  Day,
+  Vote,
+  MafiaShoot,
+  DonCheck,
+  DetectiveCheck
+}
 const sleep = require("util").promisify(setTimeout);
 export class GameData {
   players: Player[] = [];
   day = 0;
   currentTurn = 0;
   killedPreviousTurn = 0;
+  gameState: GameState = GameState.MafiaMeet
 
   tryKill() {
     const mafias = this.players.filter(
@@ -108,18 +117,18 @@ export function getMafiaSockets(room: string) {
 
 export function getGameData(room: string, username: string) {
   const gameData = gameDataMap.get(room);
+  if(gameData)
+  return getPersonalGameData(gameData, username)
+}
+
+export function getPersonalGameData(gameData: GameData, username: string) {
   const user = gameData?.players.find((x) => x.name === username);
   const players = gameData?.players.filter(x => x.name !== username);
   if (user && players) {
-    return new PersonalGameDataWe(user, players);
+    return new PersonalGameDataWe(user, players, gameData!);
   } else {
     throw new Error();
   }
-}
-
-export function getFullGameData(room: string){
-  const gameData = gameDataMap.get(room)!;
-  return new GameDataWe(gameData);
 }
 
 export function initRoom(room: string) {
@@ -164,7 +173,9 @@ export function startGame(room: string) {
 export async function startDay(room: string) {
   const gameData = gameDataMap.get(room)!;
   gameData && gameData.day++;
-  gameData && io.to(room).emit("start day", new GameDataWe(gameData));
+  gameData.players.forEach(x => {
+    io.to(x.wsId).emit("start day", getPersonalGameData(gameData, x.name))
+  }) 
   await sleep(3000);
   nextTurn(room);
 }

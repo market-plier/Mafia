@@ -29,8 +29,9 @@ export class GameComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log('on init')
     if (this.rtc.username){
-      this.rtc.initialize();
+      setTimeout(() => this.rtc.initialize(), 1000);
     }
   }
 
@@ -39,6 +40,7 @@ export class GameComponent implements OnInit {
   }
 
   joinRoom(){
+    console.log('join room')
     sessionStorage.setItem( 'username', this.form.get('playerName')?.value);
     this.rtc.initialize();
   }

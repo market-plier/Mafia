@@ -1,4 +1,5 @@
 import { Component, HostBinding, Input, OnInit } from '@angular/core';
+import { GameState } from '../model/game';
 
 @Component({
   selector: 'app-player-card',
@@ -16,6 +17,9 @@ export class PlayerCardComponent implements OnInit {
   @Input() voteCount = 0;
   @Input() voteChoise?: number;
   @Input() mediaStream?: MediaStream;
+  @Input() name?: string;
+  @Input() gameState?: string;
+  state = GameState;
 
      toEmoji(str: any) {
       if (str === undefined || str === null || str === '') {

@@ -42,11 +42,9 @@ export class RtcService {
     this.username = sessionStorage.getItem('username');
     //set socketId
     this.socketId = this.socket.io.engine.id;
-    console.log(this.socketId);
     this.socket.on('game data', (data: GameData) => {
 
       this.updateGameData(data);
-      console.log(this.gameData);
     });
 
     this.socket.on('game start', (data: GameData) => {
@@ -55,7 +53,6 @@ export class RtcService {
     })
 
     this.socket.on('new user', (data: { socketId: any }) => {
-      console.log('new user');
       this.socket.emit('newUserStart', {
         to: data.socketId,
         sender: this.socketId,
@@ -64,7 +61,6 @@ export class RtcService {
     });
 
     this.socket.on('newUserStart', (data: { sender: any }) => {
-      console.log('newUserStart');
       this.init(false, data.sender);
     });
 
@@ -74,7 +70,6 @@ export class RtcService {
         candidate: RTCIceCandidateInit | undefined;
         sender: any;
       }) => {
-        console.log('ice candidates');
         data.candidate
           ? await this.peerConnection[data.sender].addIceCandidate(
             new RTCIceCandidate(data.candidate)
@@ -86,7 +81,6 @@ export class RtcService {
     this.socket.on(
       'sdp',
       async (data: { description: RTCSessionDescriptionInit; sender: any }) => {
-        console.log('sdp');
         if (data.description.type === 'offer') {
           data.description
             ? await this.peerConnection[data.sender].setRemoteDescription(
@@ -131,7 +125,12 @@ export class RtcService {
 
     this.socket.on('ready', data => {
       const player = this.gameData?.players.find(x => x.name === data.sender);
-      player && (player.isReady = true);
+      if (player) {
+        player.isReady = data.ready;
+      }
+      if (this.gameData && this.gameData.player.name === data.sender) {
+        this.gameData.player.isReady = data.ready;
+      }
     })
 
     this.socket.emit('subscribe', {
@@ -145,14 +144,14 @@ export class RtcService {
       this.gameData = data;
       return;
     }
-    this.gameData.players = this.gameData.players.map((x) =>
-      Object.assign(
-        x,
-        data.players.find((y) => y.name === x.name),
-        x.mediaStream
-      )
-    );
-    console.log(this.gameData);
+    const nameMediaMap = this.gameData.players.reduce(function (map: Map<string, MediaStream | undefined>, obj) {
+      map.set(obj.name, obj.mediaStream);
+      return map;
+    }, new Map());
+    this.gameData = data;
+    this.gameData.players.forEach(x => {
+      x.mediaStream = nameMediaMap.get(x.name)
+    });
   }
   init(createOffer: boolean, partnerName: any) {
     this.peerConnection[partnerName] = new RTCPeerConnection(
@@ -204,10 +203,11 @@ export class RtcService {
 
     //add
     this.peerConnection[partnerName].ontrack = (e) => {
-      console.log('on track');
       let str = e.streams[0];
       const peer = this.gameData?.players.find((x) => x.wsId === partnerName);
       peer && (peer.mediaStream = str);
+      console.log(peer)
+
       // this.videos.set(partnerName, str);
       // this.videosSubject.next(this.videos);
     };
@@ -254,5 +254,10 @@ export class RtcService {
       width: '400px',
       data: this.gameData?.player.role,
     });
+    dialogRef.afterOpened().subscribe(_ => {
+      setTimeout(() => {
+        dialogRef.close();
+      }, 5000)
+    })
   }
 }
