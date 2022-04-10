@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RtcService } from '../service/rtc.service';
 import { map, mapTo, tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { GameState } from '../model/game';
+import { GameState, Roles } from '../model/game';
 
 @Component({
   selector: 'app-game',
@@ -32,12 +32,18 @@ export class GameComponent implements OnInit {
   ngOnInit(): void {
     console.log('on init')
     if (this.rtc.username){
-      setTimeout(() => this.rtc.initialize(), 1000);
+      this.rtc.initialize()
     }
   }
 
   hasName(){
     return this.rtc.username
+  }
+
+  showMafiaReadyButton()
+  {
+    return this.gameData?.gameState === this.gameState.MafiaMeet && 
+    (this.gameData?.player?.role === Roles.mafia || this.gameData?.player?.role === Roles.don)
   }
 
   joinRoom(){
@@ -47,5 +53,11 @@ export class GameComponent implements OnInit {
   }
   ready(){
     this.rtc.sendReady();
+  }
+  nextTurn(){
+    this.rtc.sendNextTurn();
+  }
+  mafiaReady(){
+    this.rtc.sendMafiaReady();
   }
 }

@@ -1,19 +1,21 @@
 :host {
   font-size: 25px;
+  height: 100%;
+  width: 100%;
   line-height: normal;
   position: relative;
-  max-width: 320px;
   display: block;
   video {
-    max-width: 320px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
     transform: rotateY(180deg);
-    width: 100%;
-    height: 100%;
+    width: 100% !important;
+    height: 100% !important;
     object-fit: cover;
   }
   &.playerTurn {
-    border: 3px;
-    border-color: aquamarine;
+    border: medium solid aquamarine;
   }
   .onVote {
     text-align: center;
@@ -32,10 +34,10 @@
     height: 30px;
     position: absolute;
     top: 0;
-    left: 0; 
-    right: 0; 
-    margin-left: auto; 
-    margin-right: auto; 
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .position {
@@ -54,13 +56,13 @@
     height: 30px;
     position: absolute;
     bottom: 0;
-    left: 0; 
-    right: 0; 
-    margin-left: auto; 
-    margin-right: auto; 
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
   }
 
-  .voteChoise{
+  .voteChoise {
     animation: myAnim 2s ease 0s 1 normal forwards;
     text-align: center;
     line-height: 60px;
@@ -73,9 +75,9 @@
     position: absolute;
     bottom: 0;
     top: 0;
-    left: 0; 
-    right: 0; 
-    margin: auto; 
+    left: 0;
+    right: 0;
+    margin: auto;
   }
 }
 @keyframes myAnim {

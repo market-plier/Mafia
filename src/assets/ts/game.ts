@@ -21,6 +21,7 @@ const sleep = require("util").promisify(setTimeout);
 export class GameData {
   players: Player[] = [];
   day = 0;
+  turnCount = 0;
   currentTurn = 0;
   killedPreviousTurn = 0;
   gameState: GameState = GameState.Lobby;
@@ -29,14 +30,14 @@ export class GameData {
     const mafias = this.players.filter(
       (x) => x.role === Roles.don || x.role === Roles.mafia
     );
-    if (mafias.every((x) => x.shot === mafias[0].shot)) {
+    if (mafias.every((x) => x.shot === mafias[0].shot && x.shot !== 0)) {
       const killed = this.players.find((x) => x.position === mafias[0].shot)!;
       killed.alive = false;
       this.killedPreviousTurn = killed.position;
     }
   }
   clear() {
-    this.currentTurn = 0;
+    this.turnCount = 0;
     this.players.forEach((x) => {
       x.hasVoted = false;
       x.isOnVote = false;
@@ -45,7 +46,7 @@ export class GameData {
     });
   }
   isLastTurn() {
-    return this.players.filter((x) => x.alive).length === this.currentTurn;
+    return this.players.filter((x) => x.alive).length === this.turnCount;
   }
   toggleReady(playerName: string) {
     const player = this.players.find((x) => x.name === playerName);
@@ -84,6 +85,12 @@ export class GameData {
       x.position = array.splice(num, 1)[0] + 1;
     });
   }
+
+  toggleMafiaReady(playerName: string){
+    const player = this.players.find((x) => x.name === playerName);
+    player && (player.isMafiaReady = !player?.isMafiaReady);
+  }
+
 }
 export class Player {
   name: string = "";
@@ -109,12 +116,12 @@ export function addReady(playerName: string, room: string) {
 }
 
 export function addMafiaReady(playerName: string, room: string) {
-  gameDataMap.get(room)?.toggleReady(playerName);
-  return !getMafiaSockets(room)?.some((x) => !x.isMafiaReady);
+  gameDataMap.get(room)?.toggleMafiaReady(playerName);
+  return !getMafia(room)?.some((x) => !x.isMafiaReady);
 }
 
-export function getMafiaSockets(room: string) {
-  return gameDataMap.get(room)?.players.filter((x) => x.role === Roles.mafia);
+export function getMafia(room: string) {
+  return gameDataMap.get(room)?.players.filter((x) => x.role === Roles.mafia || x.role === Roles.don);
 }
 
 export function getGameData(room: string, username: string) {
@@ -174,10 +181,6 @@ export function startGame(room: string) {
 export async function startDay(room: string) {
   const gameData = gameDataMap.get(room)!;
   gameData && gameData.day++;
-  gameData.players.forEach((x) => {
-    io.to(x.wsId).emit("start day", getPersonalGameData(gameData, x.name));
-  });
-  await sleep(3000);
   nextTurn(room);
 }
 
@@ -185,11 +188,13 @@ export function nextTurn(room: string) {
   const gameData = gameDataMap.get(room)!;
   const players =
     gameData?.players.sort((x) => x.position).filter((x) => x.alive) ?? [];
-  gameData.currentTurn++;
-  io.to(room).emit(
-    "person turn",
-    players[(gameData.day - 1) % players.length].position
-  );
+  gameData.turnCount++;
+  gameData.currentTurn =  players[(gameData.day - 1) % players.length].position;
+
+  gameData.players.forEach((x) => {
+    io.to(x.wsId).emit("game data", getPersonalGameData(gameData, x.name));
+    console.log(x.name, getPersonalGameData(gameData, x.name));
+  });
 
   if (gameData.isLastTurn()) {
     io.to(room).emit("end day");

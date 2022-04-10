@@ -1,5 +1,6 @@
 <video *ngIf="showVideo()" [srcObject]="mediaStream" volume='0' autoplay muted>
 </video>
+
 <div *ngIf="position" class="position">{{toEmoji(position)}}</div>
 <div *ngIf="onVote" class="onVote">
   🙋‍♂️{{voteCount > 0 ? toEmoji(voteCount):''}}

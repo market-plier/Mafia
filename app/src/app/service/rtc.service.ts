@@ -27,6 +27,9 @@ export class RtcService {
     private activatedRoute: ActivatedRoute,
     private dialog: MatDialog
   ) {
+    this.socket.on('connect', () => {
+      this.socketId = this.socket.io.engine.id;
+    })
     this.activatedRoute.queryParams.subscribe((params) => {
       this.room = params['room'];
     });
@@ -41,7 +44,7 @@ export class RtcService {
   initialize() {
     this.username = sessionStorage.getItem('username');
     //set socketId
-    this.socketId = this.socket.io.engine.id;
+
     this.socket.on('game data', (data: GameData) => {
 
       this.updateGameData(data);
@@ -134,12 +137,36 @@ export class RtcService {
       }
     })
 
-    this.socket.emit('subscribe', {
-      room: this.room,
-      socketId: this.socketId,
-      username: this.username,
-    });
+    this.socket.on('mafia ready', data => {
+      const player = this.gameData?.players.find(x => x.name === data.sender);
+      if (player) {
+        player.isReady = data.ready;
+      }
+      if (this.gameData && this.gameData.player.name === data.sender) {
+        this.gameData.player.isReady = data.ready;
+      }
+      console.log('mafia ready', data, this.gameData);
+    })
+
+    if (this.socketId) {
+      this.socket.emit('subscribe', {
+        room: this.room,
+        socketId: this.socket.io.engine.id,
+        username: this.username,
+      });
+    }
+    else {
+      console.log('else')
+      this.socket.on('connect', () => {
+        this.socket.emit('subscribe', {
+          room: this.room,
+          socketId: this.socket.io.engine.id,
+          username: this.username,
+        });
+      })
+    }
   }
+
   updateGameData(data: GameData) {
     if (!this.gameData) {
       this.gameData = data;
@@ -238,6 +265,19 @@ export class RtcService {
 
   sendReady() {
     this.socket.emit('ready', {
+      room: this.room,
+      sender: this.username,
+    });
+  }
+
+  sendNextTurn() {
+    this.socket.emit('next turn', {
+      room: this.room
+    });
+  }
+
+  sendMafiaReady() {
+    this.socket.emit('mafia ready', {
       room: this.room,
       sender: this.username,
     });

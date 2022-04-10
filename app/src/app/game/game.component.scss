@@ -1,29 +1,18 @@
-.players{
+
+.players {
     display: grid;
-    gap: 3px;
+    gap: 10px;
+    width: 90vw;
+    margin: auto;
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: repeat(3, 1fr);
-}
-video{
-    max-width: 320px;
+    height: 100vh;
 }
 
-.video {
-    max-width: 320px;
-    position: relative;
+.emptySpace {
+    grid-column-start: 2;
+    grid-column-end: 4;
+    grid-row-start: 2;
+    grid-row-end: 2;
 }
-.emptySpace{
-   grid-column-start: 2;
-   grid-column-end: 4;
-   grid-row-start: 2;
-   grid-row-end: 2;
-}
-.position {
-  width: 10px;
-  height: 10px;
-  position: absolute;
-  top: 0;
-  left: 0;
-  background-color: white;
-  border-radius: 50%;
-}
+

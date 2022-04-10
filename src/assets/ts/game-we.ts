@@ -5,6 +5,8 @@ export class PersonalGameDataWe {
   day = 0;
   killedPreviousTurn = 0;
   currentTurn = 0;
+  turnCount = 0;
+
   gameState: GameState
   constructor(player: Player, players: Player[], gameData: GameData) {
     this.player = player;
@@ -20,7 +22,8 @@ export class PersonalGameDataWe {
     this.day = gameData.day;
     this.gameState = gameData.gameState;
     this.killedPreviousTurn = gameData.killedPreviousTurn;
-    this.currentTurn = gameData.currentTurn;
+    this.currentTurn = gameData.turnCount;
+    this.turnCount = gameData.turnCount;
   }
 }
 

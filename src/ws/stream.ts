@@ -5,8 +5,10 @@ import {
   detectiveCheck,
   donCheck,
   gameDataMap,
+  GameState,
   getGameData,
-  getMafiaSockets,
+  getMafia,
+  getPersonalGameData,
   initRoom as gameInitRoom,
   joinRoom,
   mafiaShoot,
@@ -32,7 +34,7 @@ export const stream = (socket: any) => {
       } else {
         gameInitRoom(data.room);
       }
-     
+
       joinRoom(data.room, data.username, data.socketId);
       const users = gameDataMap.get(data.room)?.players;
       users?.forEach((x) => {
@@ -53,7 +55,7 @@ export const stream = (socket: any) => {
         users?.forEach((x) => {
           io.to(x.wsId).emit("game start", getGameData(data.room, x.name));
         });
-      },1000);
+      }, 1000);
     } else {
       io.to(data.room).emit("ready", { sender: data.sender, ready: gameDataMap.get(data.room)?.players.find(x => x.name === data.sender)?.isReady });
     }
@@ -62,13 +64,16 @@ export const stream = (socket: any) => {
   socket.on("mafia ready", (data: any) => {
     if (addMafiaReady(data.sender, data.room)) {
       const gameData = gameDataMap.get(data.room);
-      gameData && gameData.day++;
-      gameData && io.to(data.room).emit("start day", gameData);
+      if (gameData) {
+        gameData.day++;
+        gameData.gameState = GameState.Day;
+        nextTurn(data.room);
+      }
     } else {
-      getMafiaSockets(data.room) &&
-        socket
-          .to(getMafiaSockets(data.room))
-          .emit("mafia ready", { sender: data.sender });
+      getMafia(data.room) &&
+        io
+          .to(getMafia(data.room)!.map(x => x.wsId))
+          .emit("mafia ready", { sender: data.sender, ready: gameDataMap.get(data.room)?.players.find(x => x.name === data.sender)?.isMafiaReady });
     }
   });
 
@@ -112,7 +117,7 @@ export const stream = (socket: any) => {
       "detective check",
       detectiveCheck(data.room, data.position)
     );
-      io.emit('don turn');
+    io.emit('don turn');
   });
 
   socket.on("don check", (data: any) => {

@@ -8,7 +8,7 @@ import { GameState, Roles } from '../model/game';
 })
 export class PlayerCardComponent implements OnInit {
 
-  @HostBinding('class.plauerTurn')
+  @HostBinding('class.playerTurn')
   @Input() playerTurn = false;
 
   @Input() onVote = false;
@@ -53,11 +53,9 @@ export class PlayerCardComponent implements OnInit {
 
 
   ngOnInit(): void {
-    setTimeout(()=> this.gameState = GameState.Lobby, 5000);
   }
 
   showVideo(){
-    console.log(this.gameState, this.role)
     return (this.gameState === GameState.Day) || (this.gameState === GameState.Lobby) ||
     (this.gameState === this.state.MafiaMeet && (this.role === Roles.mafia ||this.role === Roles.don))
   }

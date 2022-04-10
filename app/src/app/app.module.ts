@@ -13,6 +13,7 @@ import { GameComponent } from './game/game.component';
 import { PlayerCardComponent } from './player-card/player-card.component';
 import { RoleDialogComponent } from './role-dialog/role-dialog.component';
 import {MatDialogModule} from '@angular/material/dialog';
+import { ButtonComponent } from './button/button.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -21,7 +22,8 @@ import {MatDialogModule} from '@angular/material/dialog';
     NotFoundComponent,
     GameComponent,
     PlayerCardComponent,
-    RoleDialogComponent
+    RoleDialogComponent,
+    ButtonComponent
   ],
   imports: [
     AppRoutingModule,
