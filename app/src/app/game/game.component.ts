@@ -5,6 +5,7 @@ import { RtcService } from '../service/rtc.service';
 import { map, mapTo, tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { GameState, Roles } from '../model/game';
+import { HelperService } from '../service/helper.service';
 
 @Component({
   selector: 'app-game',
@@ -23,7 +24,14 @@ export class GameComponent implements OnInit {
     return this.rtc.myStream
   }
 
-  constructor(private rtc: RtcService ) {
+  get shootPosition(){
+    return this.rtc.shootPosition;
+  }
+  set shootPosition(data){
+    this.rtc.shootPosition = data;
+  }
+
+  constructor(private rtc: RtcService, public helper: HelperService ) {
         this.form = new FormGroup({
           playerName: new FormControl('', Validators.required)
         })
@@ -42,8 +50,21 @@ export class GameComponent implements OnInit {
 
   showMafiaReadyButton()
   {
-    return this.gameData?.gameState === this.gameState.MafiaMeet && 
-    (this.gameData?.player?.role === Roles.mafia || this.gameData?.player?.role === Roles.don)
+    return this.gameData?.gameState === this.gameState.MafiaMeet &&
+    this.isMafia();
+  }
+
+  isMafia(){
+    return this.gameData?.player?.role === Roles.mafia || this.gameData?.player?.role === Roles.don;
+  }
+  isDetective(){
+    return this.gameData?.player?.role === Roles.detective;
+
+  }
+
+  isClickable(){
+    return (this.gameData?.gameState === GameState.DetectiveCheck && this.gameData.player.role === Roles.detective) ||
+    (this.gameData?.gameState === GameState.DonCheck && this.gameData.player.role === Roles.don)
   }
 
   joinRoom(){
@@ -51,6 +72,17 @@ export class GameComponent implements OnInit {
     sessionStorage.setItem( 'username', this.form.get('playerName')?.value);
     this.rtc.initialize();
   }
+
+  onPlayerClick(position: number){
+    console.log('click', position)
+    if(this.gameData?.gameState === GameState.DetectiveCheck){
+      this.rtc.sendDetectiveCheck(position);
+    }
+    else if(this.gameData?.gameState === GameState.DonCheck){
+      this.rtc.sendDonCheck(position);
+    }
+  }
+
   ready(){
     this.rtc.sendReady();
   }
@@ -59,5 +91,8 @@ export class GameComponent implements OnInit {
   }
   mafiaReady(){
     this.rtc.sendMafiaReady();
+  }
+  shoot(position: number){
+    this.rtc.sendMafiaShoot(position)
   }
 }

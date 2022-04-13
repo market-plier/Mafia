@@ -5,6 +5,15 @@
   line-height: normal;
   position: relative;
   display: block;
+  background: center / contain no-repeat url("../../assets/img/dead.png");
+  pointer-events: none;
+  &.alive{
+  background-color: black;
+  }
+  &.clickable {
+    pointer-events: all;
+    cursor: pointer;
+  }
   video {
     position: absolute;
     top: 0;

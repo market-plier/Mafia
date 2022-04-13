@@ -1,5 +1,6 @@
-import { Component, HostBinding, Input, OnInit } from '@angular/core';
+import { Component, Host, HostBinding, Input, OnInit } from '@angular/core';
 import { GameState, Roles } from '../model/game';
+import { HelperService } from '../service/helper.service';
 
 @Component({
   selector: 'app-player-card',
@@ -10,7 +11,10 @@ export class PlayerCardComponent implements OnInit {
 
   @HostBinding('class.playerTurn')
   @Input() playerTurn = false;
-
+  @HostBinding('class.clickable')
+  @Input() clickable = false;
+  @HostBinding('class.alive')
+  @Input() alive = true;
   @Input() onVote = false;
   @Input() ready = false;
   @Input() position?: number;
@@ -23,41 +27,17 @@ export class PlayerCardComponent implements OnInit {
 
   state = GameState;
 
-     toEmoji(str: any) {
-      if (str === undefined || str === null || str === '') {
-        return str;
-      }
-
-      if (typeof str !== 'string') {
-        str = str.toString();
-      }
-
-      if (str === '10') {
-        return '🔟';
-      }
-
-      return str
-        .replace(/0/g, '0️⃣')
-        .replace(/1/g, '1️⃣')
-        .replace(/2/g, '2️⃣')
-        .replace(/3/g, '3️⃣')
-        .replace(/4/g, '4️⃣')
-        .replace(/5/g, '5️⃣')
-        .replace(/6/g, '6️⃣')
-        .replace(/7/g, '7️⃣')
-        .replace(/8/g, '8️⃣')
-        .replace(/9/g, '9️⃣');
-    }
-
-  constructor() { }
+  constructor(public helper: HelperService) { }
 
 
   ngOnInit(): void {
   }
 
   showVideo(){
-    return (this.gameState === GameState.Day) || (this.gameState === GameState.Lobby) ||
-    (this.gameState === this.state.MafiaMeet && (this.role === Roles.mafia ||this.role === Roles.don))
+    return this.alive && ((this.gameState === GameState.Day) ||
+     (this.gameState === GameState.Lobby) ||
+    ((this.gameState === this.state.MafiaMeet) && (this.role === Roles.mafia || this.role === Roles.don)) ||
+    (this.gameState === GameState.DetectiveCheck && this.role === Roles.detective))
   }
 
 }

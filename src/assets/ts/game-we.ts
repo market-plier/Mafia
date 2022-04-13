@@ -21,8 +21,8 @@ export class PersonalGameDataWe {
     });
     this.day = gameData.day;
     this.gameState = gameData.gameState;
-    this.killedPreviousTurn = gameData.killedPreviousTurn;
-    this.currentTurn = gameData.turnCount;
+    this.killedPreviousTurn = gameData.killedPreviousDay;
+    this.currentTurn = gameData.currentTurn;
     this.turnCount = gameData.turnCount;
   }
 }

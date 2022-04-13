@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
 import { timeout } from 'rxjs/operators';
 import { io } from 'socket.io-client';
-import { GameData, PlayerWe } from '../model/game';
+import { GameData, PlayerWe, Roles } from '../model/game';
 import { RoleDialogComponent } from '../role-dialog/role-dialog.component';
 import { HelperService } from './helper.service';
 @Injectable({
@@ -21,6 +21,8 @@ export class RtcService {
   videos$ = this.videosSubject.asObservable();
   socket = io('http://localhost:3000');
   gameData?: GameData;
+  shootPosition = 0;
+  intervalId: any;
 
   constructor(
     private h: HelperService,
@@ -29,7 +31,7 @@ export class RtcService {
   ) {
     this.socket.on('connect', () => {
       this.socketId = this.socket.io.engine.id;
-    })
+    });
     this.activatedRoute.queryParams.subscribe((params) => {
       this.room = params['room'];
     });
@@ -46,15 +48,22 @@ export class RtcService {
     //set socketId
 
     this.socket.on('game data', (data: GameData) => {
-
       this.updateGameData(data);
+      console.log(this.gameData);
     });
 
     this.socket.on('game start', (data: GameData) => {
-      console.log(data);
       this.updateGameData(data);
-      this.openDialog();
-    })
+      this.openDialog(data.player.role);
+    });
+
+    this.socket.on('detective check', (data: Roles) => {
+      this.openDialog(data);
+    });
+
+    this.socket.on('don check', (data: Roles) => {
+      this.openDialog(data);
+    });
 
     this.socket.on('new user', (data: { socketId: any }) => {
       this.socket.emit('newUserStart', {
@@ -76,8 +85,8 @@ export class RtcService {
       }) => {
         data.candidate
           ? await this.peerConnection[data.sender].addIceCandidate(
-            new RTCIceCandidate(data.candidate)
-          )
+              new RTCIceCandidate(data.candidate)
+            )
           : '';
       }
     );
@@ -88,8 +97,8 @@ export class RtcService {
         if (data.description.type === 'offer') {
           data.description
             ? await this.peerConnection[data.sender].setRemoteDescription(
-              new RTCSessionDescription(data.description)
-            )
+                new RTCSessionDescription(data.description)
+              )
             : '';
 
           this.h
@@ -127,18 +136,25 @@ export class RtcService {
       }
     );
 
-    this.socket.on('ready', data => {
-      const player = this.gameData?.players.find(x => x.name === data.sender);
+    this.socket.on('ready', (data) => {
+      const player = this.gameData?.players.find((x) => x.name === data.sender);
       if (player) {
         player.isReady = data.ready;
       }
       if (this.gameData && this.gameData.player.name === data.sender) {
         this.gameData.player.isReady = data.ready;
       }
-    })
+    });
+    this.socket.on('end day', (_) => {
+      if (
+        this.gameData?.player.role === Roles.mafia ||
+        this.gameData?.player.role === Roles.don
+      )
+        this.startMafiaShoot();
+    });
 
-    this.socket.on('mafia ready', data => {
-      const player = this.gameData?.players.find(x => x.name === data.sender);
+    this.socket.on('mafia ready', (data) => {
+      const player = this.gameData?.players.find((x) => x.name === data.sender);
       if (player) {
         player.isReady = data.ready;
       }
@@ -146,7 +162,7 @@ export class RtcService {
         this.gameData.player.isReady = data.ready;
       }
       console.log('mafia ready', data, this.gameData);
-    })
+    });
 
     if (this.socketId) {
       this.socket.emit('subscribe', {
@@ -154,17 +170,24 @@ export class RtcService {
         socketId: this.socket.io.engine.id,
         username: this.username,
       });
-    }
-    else {
-      console.log('else')
+    } else {
       this.socket.on('connect', () => {
         this.socket.emit('subscribe', {
           room: this.room,
           socketId: this.socket.io.engine.id,
           username: this.username,
         });
-      })
+      });
     }
+  }
+
+  startMafiaShoot() {
+    this.intervalId = setInterval(() => {
+      this.shootPosition++;
+      if (this.shootPosition > this.gameData!.players.length + 1) {
+        this.sendMafiaShoot(0);
+      }
+    }, 5000);
   }
 
   updateGameData(data: GameData) {
@@ -172,13 +195,17 @@ export class RtcService {
       this.gameData = data;
       return;
     }
-    const nameMediaMap = this.gameData.players.reduce(function (map: Map<string, MediaStream | undefined>, obj) {
+    const nameMediaMap = this.gameData.players.reduce(function (
+      map: Map<string, MediaStream | undefined>,
+      obj
+    ) {
       map.set(obj.name, obj.mediaStream);
       return map;
-    }, new Map());
+    },
+    new Map());
     this.gameData = data;
-    this.gameData.players.forEach(x => {
-      x.mediaStream = nameMediaMap.get(x.name)
+    this.gameData.players.forEach((x) => {
+      x.mediaStream = nameMediaMap.get(x.name);
     });
   }
   init(createOffer: boolean, partnerName: any) {
@@ -234,7 +261,7 @@ export class RtcService {
       let str = e.streams[0];
       const peer = this.gameData?.players.find((x) => x.wsId === partnerName);
       peer && (peer.mediaStream = str);
-      console.log(peer)
+      console.log(peer);
 
       // this.videos.set(partnerName, str);
       // this.videosSubject.next(this.videos);
@@ -272,7 +299,7 @@ export class RtcService {
 
   sendNextTurn() {
     this.socket.emit('next turn', {
-      room: this.room
+      room: this.room,
     });
   }
 
@@ -283,15 +310,38 @@ export class RtcService {
     });
   }
 
-  openDialog(): void {
+  sendDonCheck(position: number) {
+    this.socket.emit('don check', {
+      room: this.room,
+      position,
+    });
+  }
+  sendDetectiveCheck(position: number) {
+    this.socket.emit('detective check', {
+      room: this.room,
+      position,
+    });
+  }
+
+  sendMafiaShoot(position: number) {
+    clearInterval(this.intervalId);
+    this.socket.emit('shoot', {
+      room: this.room,
+      position,
+      sender: this.username,
+    });
+    this.shootPosition = 0;
+  }
+
+  openDialog(role: Roles): void {
     const dialogRef = this.dialog.open(RoleDialogComponent, {
       width: '400px',
-      data: this.gameData?.player.role,
+      data: role,
     });
-    dialogRef.afterOpened().subscribe(_ => {
+    dialogRef.afterOpened().subscribe((_) => {
       setTimeout(() => {
         dialogRef.close();
-      }, 5000)
-    })
+      }, 5000);
+    });
   }
 }

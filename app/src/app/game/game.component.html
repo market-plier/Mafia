@@ -11,20 +11,30 @@
             <div *ngSwitchCase="gameState.MafiaMeet">
                 Mafia meeting...⏳
             </div>
-            <app-button *ngIf="showMafiaReadyButton()" (click)="mafiaReady()">Ready</app-button>
-            <app-button *ngIf="gameData?.gameState === gameState.Lobby" (click)="ready()">Ready</app-button>
-            <app-button
-                *ngIf="gameData?.gameState === gameState.Day && gameData?.player?.position === gameData?.currentTurn"
-                (click)="nextTurn()">End turn</app-button>
-
+            <div *ngSwitchCase="gameState.DetectiveCheck">
+              Detective checking...⏳
+          </div>
+          <div *ngSwitchCase="gameState.DonCheck">
+            Don checking...⏳
+        </div>
         </ng-container>
+        <app-button *ngIf="showMafiaReadyButton()" (click)="mafiaReady()">Mafia ready</app-button>
+        <app-button *ngIf="gameData?.gameState === gameState.Lobby" (click)="ready()">Ready</app-button>
+        <app-button
+            *ngIf="gameData?.gameState === gameState.Day && gameData?.player?.position === gameData?.currentTurn"
+            (click)="nextTurn()">End turn</app-button>
+            <app-button
+            *ngIf="gameData?.gameState === gameState.MafiaShoot && isMafia()"
+            (click)="shoot(shootPosition)">{{helper.toEmoji(shootPosition)}} 🔫</app-button>
+
     </div>
     <ng-container *ngIf="gameData?.players">
         <app-player-card *ngFor="let item of gameData?.players" [ready]="item.isReady" [position]="item.position"
             [ngStyle]="{'order': item.position}" [onVote]="item.isOnVote" [voteCount]="item.voteCount"
             [voteChoise]="item.voteChoise"
             [playerTurn]="gameData?.currentTurn === item.position && gameData?.currentTurn !==0 "
-            [mediaStream]="item.mediaStream" [name]="item.name" [gameState]="gameData?.gameState" [role]="item.role">
+            [mediaStream]="item.mediaStream" [name]="item.name" [gameState]="gameData?.gameState" [role]="item.role"
+            [clickable]="isClickable()" (click)="onPlayerClick(item.position)" [alive]="item.alive">
         </app-player-card>
     </ng-container>
 
@@ -32,7 +42,7 @@
         [ngStyle]="{'order': gameData.player.position}" [onVote]="gameData.player.isOnVote"
         [voteCount]="gameData.player.voteCount" [voteChoise]="gameData.player.voteChoise"
         [playerTurn]="gameData?.currentTurn === gameData.player.position && gameData?.currentTurn !==0"
-        [mediaStream]="myStream" [gameState]="gameData?.gameState" [role]="gameData.player.role">
+        [mediaStream]="myStream" [gameState]="gameData?.gameState" [role]="gameData.player.role" [alive]="gameData.player.alive">
     </app-player-card>
 
 </div>
