@@ -34,8 +34,14 @@ export interface PlayerWe {
   hasVoted: boolean;
   voteChoise: number
   voteCount: number;
+  putOnVote: PutOnVote;
   wsId: string;
   mediaStream?: MediaStream;
+}
+
+export interface PutOnVote{
+  hasPutOnVote?: number;
+  showAnimation?: boolean
 }
 
 export interface Player {
@@ -48,6 +54,7 @@ export interface Player {
   isMafiaReady?: boolean;
   isOnVote: boolean;
   hasVoted: boolean;
+  putOnVote: PutOnVote;
   voteCount: number;
   voteChoise: number
   shot: number;

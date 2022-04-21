@@ -1,4 +1,4 @@
-<video *ngIf="showVideo()" [srcObject]="mediaStream" volume='0' autoplay muted>
+<video *ngIf="showVideo()" [srcObject]="mediaStream" volume='0' autoplay [muted]="'muted'">
 </video>
 
 <div *ngIf="position" class="position">{{helper.toEmoji(position)}}</div>
@@ -14,7 +14,17 @@
 <div *ngIf="voteChoise" class="voteChoise">
   👉{{helper.toEmoji(voteChoise)}}
 </div>
+<div *ngIf="canPutOnVote()" class="button">
+  Put On Vote
+</div>
 
-<div class="voteChoise">
-  👉{{name}}
+<div *ngIf="canCheckPlayer" class="button">
+  Check Player
+</div>
+<div class="name">
+  {{name}}
+</div>
+
+<div *ngIf="putOnVote?.showAnimation" class="putOnVote">
+ 👩‍⚖️{{helper.toEmoji(putOnVote?.hasPutOnVote)}}
 </div>

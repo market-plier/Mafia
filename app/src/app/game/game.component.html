@@ -21,7 +21,7 @@
         <app-button *ngIf="showMafiaReadyButton()" (click)="mafiaReady()">Mafia ready</app-button>
         <app-button *ngIf="gameData?.gameState === gameState.Lobby" (click)="ready()">Ready</app-button>
         <app-button
-            *ngIf="gameData?.gameState === gameState.Day && gameData?.player?.position === gameData?.currentTurn"
+            *ngIf="gameData?.gameState === gameState.Day && isCurrentTurn()"
             (click)="nextTurn()">End turn</app-button>
             <app-button
             *ngIf="gameData?.gameState === gameState.MafiaShoot && isMafia()"
@@ -34,7 +34,7 @@
             [voteChoise]="item.voteChoise"
             [playerTurn]="gameData?.currentTurn === item.position && gameData?.currentTurn !==0 "
             [mediaStream]="item.mediaStream" [name]="item.name" [gameState]="gameData?.gameState" [role]="item.role"
-            [clickable]="isClickable()" (click)="onPlayerClick(item.position)" [alive]="item.alive">
+            [canCheckPlayer]="canCheckPlayer()" [canPlayerPutOnVote]="canPlayerPutOnVote()" (click)="onPlayerClick(item.position)" [alive]="item.alive">
         </app-player-card>
     </ng-container>
 

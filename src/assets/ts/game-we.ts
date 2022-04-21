@@ -26,7 +26,10 @@ export class PersonalGameDataWe {
     this.turnCount = gameData.turnCount;
   }
 }
-
+export interface PutOnVote{
+  hasPutOnVote?: number;
+  showAnimation?: boolean
+}
 export class PlayerWe {
   name: string = "";
   isReady: boolean = false;
@@ -35,6 +38,7 @@ export class PlayerWe {
   role = Roles.civilian;
   isOnVote: boolean;
   hasVoted: boolean;
+  putOnVote?: PutOnVote;
   voteCount: number;
   wsId: string;
   constructor(player: Player) {
@@ -46,5 +50,6 @@ export class PlayerWe {
     this.hasVoted = player.hasVoted;
     this.voteCount = player.voteCount;
     this.wsId = player.wsId;
+    this.putOnVote = player.putOnVote;
   }
 }

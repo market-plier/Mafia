@@ -79,8 +79,8 @@ export const stream = (socket: any) => {
   });
 
   socket.on("put to vote", (data: any) => {
-    putToVote(data.vote, data.room);
-    io.to(data.room).emit("put to vote", data.vote);
+    putToVote(data.vote, data.room, data.sender);
+    io.to(data.room).emit("put to vote", {vote: data.vote, sender: data.sender});
   });
 
   socket.on("vote", (data: any) => {
@@ -103,10 +103,6 @@ export const stream = (socket: any) => {
       candidate: data.candidate,
       sender: data.sender,
     });
-  });
-
-  socket.on("chat", (data: any) => {
-    socket.to(data.room).emit("chat", { sender: data.sender, msg: data.msg });
   });
 
   socket.on("shoot", (data: any) => {

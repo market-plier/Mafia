@@ -62,7 +62,7 @@ export class GameComponent implements OnInit {
 
   }
 
-  isClickable(){
+  canCheckPlayer(){
     return (this.gameData?.gameState === GameState.DetectiveCheck && this.gameData.player.role === Roles.detective) ||
     (this.gameData?.gameState === GameState.DonCheck && this.gameData.player.role === Roles.don)
   }
@@ -81,6 +81,14 @@ export class GameComponent implements OnInit {
     else if(this.gameData?.gameState === GameState.DonCheck){
       this.rtc.sendDonCheck(position);
     }
+  }
+
+  canPlayerPutOnVote(){
+    return (!this.gameData?.player.putOnVote || !this.gameData?.player.putOnVote.hasPutOnVote)  && this.isCurrentTurn() && this.gameData?.gameState === GameState.Day
+  }
+
+  isCurrentTurn(){
+    return this.rtc.gameData?.player.position === this.rtc.gameData?.currentTurn
   }
 
   ready(){

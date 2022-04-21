@@ -1,5 +1,5 @@
 import { io } from "../../app";
-import { PersonalGameDataWe } from "./game-we";
+import { PersonalGameDataWe, PutOnVote } from "./game-we";
 export const gameDataMap = new Map<string, GameData>();
 export enum Roles {
   detective,
@@ -30,7 +30,6 @@ export class GameData {
     const mafias = this.players.filter(
       (x) => x.role === Roles.don || x.role === Roles.mafia
     );
-    console.log(this, mafias);
     if (mafias.every((x) => x.shot === mafias[0].shot && x.shot !== 0)) {
       const killed = this.players.find((x) => x.position === mafias[0].shot)!;
       this.killedPreviousDay = killed.position;
@@ -46,6 +45,7 @@ export class GameData {
       x.voteCount = 0;
       x.shot = 0;
       x.hasShot = false;
+      x.putOnVote = undefined;
     });
   }
   isLastTurn() {
@@ -103,6 +103,7 @@ export class Player {
   position: number = 0;
   isMafiaReady?: boolean;
   isOnVote = false;
+  putOnVote?: PutOnVote;
   hasVoted = false;
   voteCount = 0;
   shot = 0;
@@ -160,9 +161,13 @@ export function joinRoom(room: string, name: string, wsId: string) {
   }
 }
 
-export function putToVote(playerName: string, room: string) {
-  gameDataMap.get(room)!.players.find((x) => x.name === playerName)!.isOnVote =
+export function putToVote(position: number, room: string, votee: number) {
+  const voter = gameDataMap.get(room)!.players.find((x) => x.position === votee);
+  if (voter && !voter.putOnVote){
+    gameDataMap.get(room)!.players.find((x) => x.position === position)!.isOnVote =
     true;
+    voter.putOnVote = {hasPutOnVote: position, showAnimation: false};
+  }
 }
 
 export function vote(sender: string, vote: string, room: string) {

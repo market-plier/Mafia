@@ -153,6 +153,20 @@ export class RtcService {
         this.startMafiaShoot();
     });
 
+    this.socket.on('put to vote', (data) =>{
+      const player = this.gameData?.players.find((x) => x.name === data.sender);
+      if (player) {
+        player.putOnVote = {hasPutOnVote: data.vote, showAnimation: true};
+        setTimeout(() => player.putOnVote.showAnimation = false, 3000);
+      }
+      if (this.gameData && this.gameData.player.name === data.sender) {
+        this.gameData.player.putOnVote = {hasPutOnVote: data.vote, showAnimation: true};
+        setTimeout(() => this.gameData!.player.putOnVote.showAnimation = false, 3000);
+
+      }
+
+    });
+
     this.socket.on('mafia ready', (data) => {
       const player = this.gameData?.players.find((x) => x.name === data.sender);
       if (player) {
@@ -331,6 +345,14 @@ export class RtcService {
       sender: this.username,
     });
     this.shootPosition = 0;
+  }
+
+  sendPutToVote(position: number){
+    this.socket.emit('put to vote', {
+      room: this.room,
+      position,
+      sender: this.username
+    });
   }
 
   openDialog(role: Roles): void {

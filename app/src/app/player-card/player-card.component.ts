@@ -1,5 +1,5 @@
-import { Component, Host, HostBinding, Input, OnInit } from '@angular/core';
-import { GameState, Roles } from '../model/game';
+import { Component, Host, HostBinding, Input, OnInit, Output } from '@angular/core';
+import { GameState, PutOnVote, Roles } from '../model/game';
 import { HelperService } from '../service/helper.service';
 
 @Component({
@@ -11,10 +11,9 @@ export class PlayerCardComponent implements OnInit {
 
   @HostBinding('class.playerTurn')
   @Input() playerTurn = false;
-  @HostBinding('class.clickable')
-  @Input() clickable = false;
   @HostBinding('class.alive')
   @Input() alive = true;
+  @Input() canCheckPlayer = false;
   @Input() onVote = false;
   @Input() ready = false;
   @Input() position?: number;
@@ -24,7 +23,8 @@ export class PlayerCardComponent implements OnInit {
   @Input() name?: string;
   @Input() gameState?: GameState;
   @Input() role?: Roles;
-
+  @Input() putOnVote?: PutOnVote;
+  @Input() canPlayerPutOnVote = false;
   state = GameState;
 
   constructor(public helper: HelperService) { }
@@ -38,6 +38,10 @@ export class PlayerCardComponent implements OnInit {
      (this.gameState === GameState.Lobby) ||
     ((this.gameState === this.state.MafiaMeet) && (this.role === Roles.mafia || this.role === Roles.don)) ||
     (this.gameState === GameState.DetectiveCheck && this.role === Roles.detective))
+  }
+
+  canPutOnVote(){
+    return !this.onVote && this.canPlayerPutOnVote
   }
 
 }
