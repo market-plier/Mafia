@@ -14,11 +14,11 @@
 <div *ngIf="voteChoise" class="voteChoise">
   👉{{helper.toEmoji(voteChoise)}}
 </div>
-<div *ngIf="canPutOnVote()" class="button">
+<div (click)='putOnVoteEmit.emit()' *ngIf="canPutOnVote()" class="button">
   Put On Vote
 </div>
 
-<div *ngIf="canCheckPlayer" class="button">
+<div (click)="checkPlayer.emit()" *ngIf="canCheckPlayer" class="button">
   Check Player
 </div>
 <div class="name">

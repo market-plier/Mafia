@@ -154,6 +154,7 @@ export class RtcService {
     });
 
     this.socket.on('put to vote', (data) =>{
+      console.log(data);
       const player = this.gameData?.players.find((x) => x.name === data.sender);
       if (player) {
         player.putOnVote = {hasPutOnVote: data.vote, showAnimation: true};

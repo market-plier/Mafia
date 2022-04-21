@@ -1,4 +1,4 @@
-import { Component, Host, HostBinding, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Host, HostBinding, Input, OnInit, Output } from '@angular/core';
 import { GameState, PutOnVote, Roles } from '../model/game';
 import { HelperService } from '../service/helper.service';
 
@@ -26,7 +26,8 @@ export class PlayerCardComponent implements OnInit {
   @Input() putOnVote?: PutOnVote;
   @Input() canPlayerPutOnVote = false;
   state = GameState;
-
+  @Output() checkPlayer: EventEmitter<any> = new EventEmitter();
+  @Output() putOnVoteEmit: EventEmitter<any> = new EventEmitter();
   constructor(public helper: HelperService) { }
 
 

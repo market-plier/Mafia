@@ -68,13 +68,11 @@ export class GameComponent implements OnInit {
   }
 
   joinRoom(){
-    console.log('join room')
     sessionStorage.setItem( 'username', this.form.get('playerName')?.value);
     this.rtc.initialize();
   }
 
-  onPlayerClick(position: number){
-    console.log('click', position)
+  onPlayerCheck(position: number){
     if(this.gameData?.gameState === GameState.DetectiveCheck){
       this.rtc.sendDetectiveCheck(position);
     }
@@ -89,6 +87,10 @@ export class GameComponent implements OnInit {
 
   isCurrentTurn(){
     return this.rtc.gameData?.player.position === this.rtc.gameData?.currentTurn
+  }
+
+  onPutOnVote(position: number){
+    this.rtc.sendPutToVote(position);
   }
 
   ready(){
