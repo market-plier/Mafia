@@ -12,20 +12,18 @@
                 Mafia meeting...⏳
             </div>
             <div *ngSwitchCase="gameState.DetectiveCheck">
-              Detective checking...⏳
-          </div>
-          <div *ngSwitchCase="gameState.DonCheck">
-            Don checking...⏳
-        </div>
+                Detective checking...⏳
+            </div>
+            <div *ngSwitchCase="gameState.DonCheck">
+                Don checking...⏳
+            </div>
         </ng-container>
         <app-button *ngIf="showMafiaReadyButton()" (click)="mafiaReady()">Mafia ready</app-button>
         <app-button *ngIf="gameData?.gameState === gameState.Lobby" (click)="ready()">Ready</app-button>
-        <app-button
-            *ngIf="gameData?.gameState === gameState.Day && isCurrentTurn()"
-            (click)="nextTurn()">End turn</app-button>
-            <app-button
-            *ngIf="gameData?.gameState === gameState.MafiaShoot && isMafia()"
-            (click)="shoot(shootPosition)">{{helper.toEmoji(shootPosition)}} 🔫</app-button>
+        <app-button *ngIf="gameData?.gameState === gameState.Day && isCurrentTurn()" (click)="nextTurn()">End turn
+        </app-button>
+        <app-button *ngIf="gameData?.gameState === gameState.MafiaShoot && isMafia()" (click)="shoot(shootPosition)">
+            {{helper.toEmoji(shootPosition)}} 🔫</app-button>
 
     </div>
     <ng-container *ngIf="gameData?.players">
@@ -34,15 +32,19 @@
             [voteChoise]="item.voteChoise"
             [playerTurn]="gameData?.currentTurn === item.position && gameData?.currentTurn !==0 "
             [mediaStream]="item.mediaStream" [name]="item.name" [gameState]="gameData?.gameState" [role]="item.role"
-            [canCheckPlayer]="canCheckPlayer()" [canPlayerPutOnVote]="canPlayerPutOnVote()" (checkPlayer)="onPlayerCheck(item.position)" (putOnVoteEmit)="onPutOnVote(item.position)" [alive]="item.alive">
+            [canCheckPlayer]="canCheckPlayer()" [alive]="item.alive" [canPlayerPutOnVote]="canPlayerPutOnVote()"
+            [putOnVote]="item.putOnVote" (checkPlayer)="onPlayerCheck(item.position)"
+            (putOnVoteEmit)="onPutOnVote(item.position)">
         </app-player-card>
     </ng-container>
 
-    <app-player-card *ngIf="gameData" [ready]="gameData.player.isReady" [position]="gameData.player.position"
-        [ngStyle]="{'order': gameData.player.position}" [onVote]="gameData.player.isOnVote"
-        [voteCount]="gameData.player.voteCount" [voteChoise]="gameData.player.voteChoise"
-        [playerTurn]="gameData?.currentTurn === gameData.player.position && gameData?.currentTurn !==0"
-        [mediaStream]="myStream" [gameState]="gameData?.gameState" [role]="gameData.player.role" [alive]="gameData.player.alive">
+    <app-player-card *ngIf="gameData?.player as item" [ready]="item.isReady" [position]="item.position"
+        [ngStyle]="{'order': item.position}" [onVote]="item.isOnVote" [voteCount]="item.voteCount"
+        [voteChoise]="item.voteChoise"
+        [playerTurn]="gameData?.currentTurn === item.position && gameData?.currentTurn !==0" [mediaStream]="myStream"
+        [gameState]="gameData?.gameState" [role]="item.role" [alive]="item.alive">
+        [putOnVote]="item.putOnVote"
+-- why put on vote doesn't show on self??????
     </app-player-card>
 
 </div>

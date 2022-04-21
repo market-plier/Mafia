@@ -161,8 +161,8 @@ export function joinRoom(room: string, name: string, wsId: string) {
   }
 }
 
-export function putToVote(position: number, room: string, votee: number) {
-  const voter = gameDataMap.get(room)!.players.find((x) => x.position === votee);
+export function putToVote(position: number, room: string, votee: string) {
+  const voter = gameDataMap.get(room)!.players.find((x) => x.name === votee);
   if (voter && !voter.putOnVote){
     gameDataMap.get(room)!.players.find((x) => x.position === position)!.isOnVote =
     true;

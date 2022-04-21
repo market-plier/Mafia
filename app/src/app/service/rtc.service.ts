@@ -351,7 +351,7 @@ export class RtcService {
   sendPutToVote(position: number){
     this.socket.emit('put to vote', {
       room: this.room,
-      position,
+      vote: position,
       sender: this.username
     });
   }

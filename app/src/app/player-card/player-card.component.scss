@@ -93,6 +93,26 @@
       display: block;
     }
   }
+
+  .putOnVote{
+    text-align: center;
+    line-height: 60px;
+    width: 60px;
+    height: 60px;
+    background-color: rgba(232, 244, 255, 0.397);
+    border: 5px solid;
+    border-radius: 2px;
+    border-color: rgba(177, 217, 255, 0.712);
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    animation-name: bounceIn;
+    animation-duration: 1s;
+    animation-fill-mode: both;
+  }
+
   .putOnVoteButton {
     display: none;
     text-align: center;
