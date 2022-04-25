@@ -42,9 +42,9 @@
         [ngStyle]="{'order': item.position}" [onVote]="item.isOnVote" [voteCount]="item.voteCount"
         [voteChoise]="item.voteChoise"
         [playerTurn]="gameData?.currentTurn === item.position && gameData?.currentTurn !==0" [mediaStream]="myStream"
-        [gameState]="gameData?.gameState" [role]="item.role" [alive]="item.alive">
-        [putOnVote]="item.putOnVote"
--- why put on vote doesn't show on self??????
+        [gameState]="gameData?.gameState" [role]="item.role" [alive]="item.alive"
+        [putOnVote]="item.putOnVote">
+
     </app-player-card>
 
 </div>
