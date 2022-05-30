@@ -27,11 +27,12 @@ export class GameComponent implements OnInit {
   get shootPosition(){
     return this.rtc.shootPosition;
   }
+
   set shootPosition(data){
     this.rtc.shootPosition = data;
   }
 
-  constructor(private rtc: RtcService, public helper: HelperService ) {
+  constructor(public rtc: RtcService, public helper: HelperService ) {
         this.form = new FormGroup({
           playerName: new FormControl('', Validators.required)
         })
@@ -85,12 +86,20 @@ export class GameComponent implements OnInit {
     return (!this.gameData?.player.putOnVote || !this.gameData?.player.putOnVote.hasPutOnVote)  && this.isCurrentTurn() && this.gameData?.gameState === GameState.Day
   }
 
+  canPlayerVote(){
+    return (this.gameData?.gameState === GameState.Vote || this.gameData?.gameState === GameState.SecondVote || this.gameData?.gameState === GameState.VoteToHang) && !this.gameData.player.hasVoted
+  }
+
   isCurrentTurn(){
     return this.rtc.gameData?.player.position === this.rtc.gameData?.currentTurn
   }
 
   onPutOnVote(position: number){
     this.rtc.sendPutToVote(position);
+  }
+
+  onVote(position: number){
+    this.rtc.sendVote(position);
   }
 
   ready(){

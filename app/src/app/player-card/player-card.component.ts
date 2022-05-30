@@ -17,8 +17,9 @@ export class PlayerCardComponent implements OnInit {
   @Input() onVote = false;
   @Input() ready = false;
   @Input() position?: number;
+  @Input() hasVoted?: boolean;
   @Input() voteCount = 0;
-  @Input() voteChoise?: number;
+  @Input() votedFor?: number;
   @Input() mediaStream?: MediaStream;
   @Input() name?: string;
   @Input() gameState?: GameState;
@@ -28,6 +29,7 @@ export class PlayerCardComponent implements OnInit {
   state = GameState;
   @Output() checkPlayer: EventEmitter<any> = new EventEmitter();
   @Output() putOnVoteEmit: EventEmitter<any> = new EventEmitter();
+
   constructor(public helper: HelperService) { }
 
 
@@ -44,5 +46,4 @@ export class PlayerCardComponent implements OnInit {
   canPutOnVote(){
     return !this.onVote && this.canPlayerPutOnVote
   }
-
 }

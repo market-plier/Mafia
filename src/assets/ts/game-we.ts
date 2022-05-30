@@ -6,6 +6,9 @@ export class PersonalGameDataWe {
   killedPreviousTurn = 0;
   currentTurn = 0;
   turnCount = 0;
+  votesForHangCount = 0;
+  killedPreviousDay = 0;
+  votingFor = 0;
 
   gameState: GameState
   constructor(player: Player, players: Player[], gameData: GameData) {
@@ -24,17 +27,21 @@ export class PersonalGameDataWe {
     this.killedPreviousTurn = gameData.killedPreviousDay;
     this.currentTurn = gameData.currentTurn;
     this.turnCount = gameData.turnCount;
+    this.votesForHangCount = gameData.votesForHangCount;
+    this.killedPreviousDay = gameData.killedPreviousDay;
+    this.votingFor = gameData.votingFor;
   }
 }
 export interface PutOnVote{
   hasPutOnVote?: number;
-  showAnimation?: boolean
+  showAnimation?: boolean; //fixme)
 }
 export class PlayerWe {
   name: string = "";
   isReady: boolean = false;
   alive = true;
   position: number;
+  votedFor: number;
   role = Roles.civilian;
   isOnVote: boolean;
   hasVoted: boolean;
@@ -51,5 +58,6 @@ export class PlayerWe {
     this.voteCount = player.voteCount;
     this.wsId = player.wsId;
     this.putOnVote = player.putOnVote;
+    this.votedFor = player.votedFor;
   }
 }

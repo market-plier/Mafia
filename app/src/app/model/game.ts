@@ -12,7 +12,10 @@ export enum GameState {
   Vote,
   MafiaShoot,
   DonCheck,
-  DetectiveCheck
+  DetectiveCheck,
+  WordsBeforeSecondVote,
+  SecondVote,
+  VoteToHang
 }
 
 export interface GameData {
@@ -22,6 +25,8 @@ export interface GameData {
   gameState: GameState
   currentTurn: number;
   killedPreviousTurn: number;
+  votesForHangCount:number;
+  votingFor:number;
 }
 
 export interface PlayerWe {
@@ -32,7 +37,7 @@ export interface PlayerWe {
   role: Roles
   isOnVote: boolean;
   hasVoted: boolean;
-  voteChoise: number
+  votedFor: number
   voteCount: number;
   putOnVote: PutOnVote;
   wsId: string;
@@ -56,6 +61,6 @@ export interface Player {
   hasVoted: boolean;
   putOnVote: PutOnVote;
   voteCount: number;
-  voteChoise: number
+  votedFor: number
   shot: number;
 }

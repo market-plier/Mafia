@@ -11,8 +11,8 @@
 <div *ngIf="playerTurn" class="playerTurn">
   🎤
 </div>
-<div *ngIf="voteChoise" class="voteChoise">
-  👉{{helper.toEmoji(voteChoise)}}
+<div *ngIf="(votedFor === position || (gameState === state.VoteToHang && hasVoted)) && gameState !== state.Lobby" class="voteChoise">
+  👍
 </div>
 <div (click)='putOnVoteEmit.emit()' *ngIf="canPutOnVote()" class="button">
   Put On Vote
@@ -25,7 +25,6 @@
   {{name}}
 </div>
 
-<!-- <div *ngIf="putOnVote?.showAnimation" class="putOnVote"> -->
-  <div class="putOnVote">
+<div *ngIf="putOnVote?.showAnimation" class="putOnVote">
  👩‍⚖️{{helper.toEmoji(putOnVote?.hasPutOnVote)}}
 </div>

@@ -21,6 +21,7 @@ export class RtcService {
   videos$ = this.videosSubject.asObservable();
   socket = io('http://localhost:3000');
   gameData?: GameData;
+  counter = 0;
   shootPosition = 0;
   intervalId: any;
 
@@ -77,6 +78,11 @@ export class RtcService {
       this.init(false, data.sender);
     });
 
+    this.socket.on('votingCounter', (counter: number) => {
+      this.counter = counter - 1;
+    });
+
+
     this.socket.on(
       'ice candidates',
       async (data: {
@@ -85,8 +91,8 @@ export class RtcService {
       }) => {
         data.candidate
           ? await this.peerConnection[data.sender].addIceCandidate(
-              new RTCIceCandidate(data.candidate)
-            )
+            new RTCIceCandidate(data.candidate)
+          )
           : '';
       }
     );
@@ -97,8 +103,8 @@ export class RtcService {
         if (data.description.type === 'offer') {
           data.description
             ? await this.peerConnection[data.sender].setRemoteDescription(
-                new RTCSessionDescription(data.description)
-              )
+              new RTCSessionDescription(data.description)
+            )
             : '';
 
           this.h
@@ -153,15 +159,15 @@ export class RtcService {
         this.startMafiaShoot();
     });
 
-    this.socket.on('put to vote', (data) =>{
+    this.socket.on('put to vote', (data) => {
       console.log(data);
       const player = this.gameData?.players.find((x) => x.name === data.sender);
       if (player) {
-        player.putOnVote = {hasPutOnVote: data.vote, showAnimation: true};
+        player.putOnVote = { hasPutOnVote: data.vote, showAnimation: true };
         setTimeout(() => player.putOnVote.showAnimation = false, 3000);
       }
       if (this.gameData && this.gameData.player.name === data.sender) {
-        this.gameData.player.putOnVote = {hasPutOnVote: data.vote, showAnimation: true};
+        this.gameData.player.putOnVote = { hasPutOnVote: data.vote, showAnimation: true };
         setTimeout(() => this.gameData!.player.putOnVote.showAnimation = false, 3000);
 
       }
@@ -217,7 +223,7 @@ export class RtcService {
       map.set(obj.name, obj.mediaStream);
       return map;
     },
-    new Map());
+      new Map());
     this.gameData = data;
     this.gameData.players.forEach((x) => {
       x.mediaStream = nameMediaMap.get(x.name);
@@ -348,7 +354,15 @@ export class RtcService {
     this.shootPosition = 0;
   }
 
-  sendPutToVote(position: number){
+  sendPutToVote(position: number) {
+    this.socket.emit('put to vote', {
+      room: this.room,
+      vote: position,
+      sender: this.username
+    });
+  }
+
+  sendVote(position: number) {
     this.socket.emit('put to vote', {
       room: this.room,
       vote: position,
