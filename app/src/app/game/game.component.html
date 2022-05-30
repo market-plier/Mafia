@@ -18,8 +18,12 @@
                 Don checking...⏳
             </div>
             <div
-                *ngIf="rtc.counter !== -1 && (gameData?.gameState === gameState.Vote || gameData?.gameState === gameState.SecondVote || gameData?.gameState === gameState.VoteToHang)">
+                *ngIf="rtc.counter !== -1 && (gameData?.gameState === gameState.Vote || gameData?.gameState === gameState.SecondVote)">
                 ⏳ {{helper.toEmoji(rtc.counter)}} voting for {{gameData?.votingFor}}
+            </div>
+            <div
+                *ngIf="rtc.counter !== -1 && (gameData?.gameState === gameState.VoteToHang)">
+                ⏳ {{helper.toEmoji(rtc.counter)}} voting for HANG}
             </div>
         </ng-container>
         <app-button *ngIf="showMafiaReadyButton()" (click)="mafiaReady()">Mafia ready</app-button>
