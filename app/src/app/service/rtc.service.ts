@@ -19,7 +19,7 @@ export class RtcService {
   socketId: any;
   private videosSubject = new Subject<Map<any, any>>();
   videos$ = this.videosSubject.asObservable();
-  socket = io('http://funny-mafia-app.herokuapp.com');
+  socket = io('https://funny-mafia-app.herokuapp.com');
   gameData?: GameData;
   counter = 0;
   shootPosition = 0;
