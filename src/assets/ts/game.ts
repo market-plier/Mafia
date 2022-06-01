@@ -172,7 +172,7 @@ export function joinRoom(room: string, name: string, wsId: string) {
   }
 }
 
-function getGameDataByRoom(room: string) {
+export function getGameDataByRoom(room: string) {
   return gameDataMap.get(room)!;
 }
 

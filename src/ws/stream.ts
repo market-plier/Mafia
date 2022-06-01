@@ -6,6 +6,7 @@ import {
   donCheck, endTurn, gameDataMap,
   GameState,
   getGameData,
+  getGameDataByRoom,
   getMafia,
   initRoom as gameInitRoom,
   joinRoom,
@@ -17,11 +18,10 @@ import {
 export const stream = (socket: any) => {
   socket.on("subscribe", (data: any) => {
     let room = socket.adapter.rooms.get(data.room);
-    if (!room || room.size < 11) {
+    if (!room || room.size < 11 && getGameDataByRoom(data.room).gameState === GameState.Lobby) {
       //subscribe/join a room
       socket.join(data.room);
       socket.join(data.socketId);
-      console.log(data.socketId);
       //Inform other members in the room of new user's arrival
       if (socket.adapter.rooms.get(data.room)?.size > 1) {
         socket.to(data.room).emit("new user", { socketId: data.socketId });
