@@ -177,8 +177,12 @@ export function canJoinGame(room: string, name: string) {
   const player = gameData.players?.find((x) => x.name === name);
   if (!player){
     if (gameData.gameState === GameState.Lobby){
-      return true
+      return true;
     }
+    return false;
+  }
+  else{
+    return true;
   }
 }
 
