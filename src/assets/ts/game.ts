@@ -172,6 +172,16 @@ export function joinRoom(room: string, name: string, wsId: string) {
   }
 }
 
+export function canJoinGame(room: string, name: string) {
+  const gameData = getGameDataByRoom(room)!;
+  const player = gameData.players?.find((x) => x.name === name);
+  if (!player){
+    if (gameData.gameState === GameState.Lobby){
+      return true
+    }
+  }
+}
+
 export function getGameDataByRoom(room: string) {
   return gameDataMap.get(room)!;
 }

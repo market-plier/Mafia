@@ -9,7 +9,7 @@ export class ButtonComponent implements OnInit {
 
   @Input() text = ''
 
-  @HostBinding () @Input() disabled: boolean = false;
+  @HostBinding('class.disabled') @Input() disabled: boolean = false;
   constructor() {
 
    }

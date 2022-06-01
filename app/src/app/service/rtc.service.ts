@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
 import { timeout } from 'rxjs/operators';
 import { io } from 'socket.io-client';
+import { environment } from 'src/environments/environment';
 import { GameData, PlayerWe, Roles } from '../model/game';
 import { RoleDialogComponent } from '../role-dialog/role-dialog.component';
 import { HelperService } from './helper.service';
@@ -19,7 +20,7 @@ export class RtcService {
   socketId: any;
   private videosSubject = new Subject<Map<any, any>>();
   videos$ = this.videosSubject.asObservable();
-  socket = io('https://funny-mafia-app.herokuapp.com');
+  socket = io(environment.apiUrl);
   gameData?: GameData;
   counter = 0;
   shootPosition = 0;
@@ -30,6 +31,7 @@ export class RtcService {
     private activatedRoute: ActivatedRoute,
     private dialog: MatDialog
   ) {
+    console.log(environment);
     this.socket.on('connect', () => {
       this.socketId = this.socket.io.engine.id;
     });
