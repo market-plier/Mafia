@@ -34,7 +34,7 @@ export class PersonalGameDataWe {
 }
 export interface PutOnVote{
   hasPutOnVote?: number;
-  showAnimation?: boolean; //fixme)
+  showAnimation?: boolean; //TODO
 }
 export class PlayerWe {
   name: string = "";

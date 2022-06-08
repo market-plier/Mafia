@@ -1,3 +1,11 @@
-
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-color: rgb(73, 45, 3);}
+html,
+body {
+    height: 100%;
+}
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    background-image: url('assets/img/background.svg');
+    background-size: cover;
+    background-repeat: no-repeat;
+}
