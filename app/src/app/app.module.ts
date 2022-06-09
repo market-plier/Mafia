@@ -14,6 +14,7 @@ import { PlayerCardComponent } from './player-card/player-card.component';
 import { RoleDialogComponent } from './role-dialog/role-dialog.component';
 import {MatDialogModule} from '@angular/material/dialog';
 import { ButtonComponent } from './button/button.component';
+import { AngularTiltModule } from 'src/libs/tilt/angular-tilt.module';
 @NgModule({
   declarations: [
     AppComponent,
@@ -27,6 +28,7 @@ import { ButtonComponent } from './button/button.component';
   ],
   imports: [
     AppRoutingModule,
+    AngularTiltModule,
     BrowserModule,
     MatFormFieldModule,
     MatInputModule,
