@@ -144,7 +144,7 @@ export class RtcService {
       }
     );
 
-    this.socket.on('ready', (data) => {
+    this.socket.on('ready', (data: { sender: string; ready: boolean; }) => {
       const player = this.gameData?.players.find((x) => x.name === data.sender);
       if (player) {
         player.isReady = data.ready;
@@ -153,7 +153,7 @@ export class RtcService {
         this.gameData.player.isReady = data.ready;
       }
     });
-    this.socket.on('end day', (_) => {
+    this.socket.on('end day', (_: any) => {
       if (
         this.gameData?.player.role === Roles.mafia ||
         this.gameData?.player.role === Roles.don
@@ -161,7 +161,7 @@ export class RtcService {
         this.startMafiaShoot();
     });
 
-    this.socket.on('put to vote', (data) => {
+    this.socket.on('put to vote', (data: { sender: string; vote: any; }) => {
       console.log(data);
       const player = this.gameData?.players.find((x) => x.name === data.sender);
       if (player) {
@@ -176,7 +176,7 @@ export class RtcService {
 
     });
 
-    this.socket.on('mafia ready', (data) => {
+    this.socket.on('mafia ready', (data: { sender: string; ready: boolean; }) => {
       const player = this.gameData?.players.find((x) => x.name === data.sender);
       if (player) {
         player.isReady = data.ready;

@@ -5,7 +5,8 @@ import { HelperService } from '../service/helper.service';
 @Component({
   selector: 'app-create-room',
   templateUrl: './create-room.component.html',
-  styleUrls: ['./create-room.component.scss']
+  styleUrls: ['./create-room.component.scss'],
+  host: {'class': 'container'}
 })
 export class CreateRoomComponent implements OnInit {
 

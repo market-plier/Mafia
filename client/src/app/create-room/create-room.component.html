@@ -1,4 +1,5 @@
-<form class="createRoom" aTilt [formGroup]="form" (submit)="createRoom()">
+<div class="row w-100">
+<form class="createRoom flex-column col-4" aTilt [formGroup]="form" (submit)="createRoom()">
     <mat-form-field appearance="fill">
         <mat-label>Enter your name</mat-label>
         <input matInput type="text" formControlName="playerName">
@@ -9,3 +10,4 @@
     </mat-form-field>
     <button [disabled]="form.invalid" type="submit">Create</button>
 </form>
+</div>
