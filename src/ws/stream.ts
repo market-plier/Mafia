@@ -2,10 +2,12 @@ import { io } from "../app";
 import {
   addMafiaReady,
   addReady,
+  canJoinGame,
   detectiveCheck,
   donCheck, endTurn, gameDataMap,
   GameState,
   getGameData,
+  getGameDataByRoom,
   getMafia,
   initRoom as gameInitRoom,
   joinRoom,
@@ -17,18 +19,15 @@ import {
 export const stream = (socket: any) => {
   socket.on("subscribe", (data: any) => {
     let room = socket.adapter.rooms.get(data.room);
-    if (!room || room.size < 11) {
+    gameInitRoom(data.room);
+    if ((!room || room.size < 11) && canJoinGame(data.room, data.username)) {
       //subscribe/join a room
       socket.join(data.room);
       socket.join(data.socketId);
-      console.log(data.socketId);
       //Inform other members in the room of new user's arrival
       if (socket.adapter.rooms.get(data.room)?.size > 1) {
         socket.to(data.room).emit("new user", { socketId: data.socketId });
-      } else {
-        gameInitRoom(data.room);
       }
-
       joinRoom(data.room, data.username, data.socketId);
       sendEveryonePersonalData(gameDataMap.get(data.room)!);
     }
