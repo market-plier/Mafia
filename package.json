@@ -19,7 +19,7 @@
     "watch": "nodemon --watch src/** --ext ts,json --ignore src/**/*.spec.ts --exec ts-node src/app.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "ts-node ./src/app.ts",
-    "build": "(npm --prefix ./app install && npm --prefix ./app run build) || npm --prefix ./app run build"
+    "build": "(npm --prefix ./client install && npm --prefix ./clien run build) || npm --prefix ./client run build"
   },
   "repository": {
     "type": "git",
