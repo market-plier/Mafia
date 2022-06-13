@@ -1,13 +1,9 @@
 <div class="row w-100">
-<form class="createRoom flex-column col-4" aTilt [formGroup]="form" (submit)="createRoom()">
-    <mat-form-field appearance="fill">
-        <mat-label>Enter your name</mat-label>
-        <input matInput type="text" formControlName="playerName">
-    </mat-form-field>
-    <mat-form-field  appearance="fill">
-        <mat-label>Enter room name</mat-label>
-        <input matInput type="text" formControlName="roomName">
-    </mat-form-field>
-    <button [disabled]="form.invalid" type="submit">Create</button>
-</form>
+    <form class="createRoom flex-column col-4" aTilt [formGroup]="form" (submit)="createRoom()">
+        <mat-form-field appearance="fill">
+            <mat-label>Enter your name</mat-label>
+            <input matInput type="text" formControlName="playerName">
+        </mat-form-field>
+        <app-button (click)="createRoom()" [disabled]="form.invalid" type="submit">Create</app-button>
+    </form>
 </div>
